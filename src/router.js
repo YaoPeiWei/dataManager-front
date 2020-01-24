@@ -5,9 +5,18 @@ Vue.use(VueRouter)
 
 const routes = [
   {
+    path: '/',
+    redirect: '/login'
+  },
+  {
     path: '/HelloWorld',
     name: '初始化vue界面',
-    component: () => import('./components/HelloWorld')
+    component: () => import('./modular/HelloWorld')
+  },
+  {
+    path: '/login',
+    name: 'Login',
+    component: () => import('./modular/Login/components/Login')
   }
 ]
 const router = new VueRouter({
