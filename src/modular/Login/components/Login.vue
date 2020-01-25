@@ -64,7 +64,7 @@
 </template>
 
 <script>
-import {dologin} from '../api/login'
+import {dologin, getLoginUser} from '../api/login'
 
 export default {
   name: 'Login',
@@ -76,17 +76,41 @@ export default {
       loading: false
     }
   },
+  mounted () {
+    this.setUser()
+  },
   methods: {
+    setUser () {
+      if (this.$store.getters.getRememberUser) {
+        const user = this.$store.getters.getRememberUser
+        setTimeout(() => {
+          this.form.setFieldsValue({
+            uname: user.uname,
+            password: user.password
+          })
+        }, 0)
+      }
+    },
     handleSubmit (e) {
       // e.preventDefault()
       this.form.validateFields((err, values) => {
         if (!err) {
           // console.log('Received values of form: ', values)
-          // this.loading = true
+          this.loading = true
           dologin('/user/login/security/doLogin', values).then(res => {
             this.loading = false
-            // console.log(res)
             if (res.code === 103) {
+              getLoginUser('/user/ReturnLoginUser', null).then(res => {
+                if (res.code === 0) {
+                  this.$store.commit('setLoginUser', res.result)
+                  // 记住我功能处理
+                  if (values.rememberMe) {
+                    this.$store.commit('setRememberUser', res.result)
+                  } else {
+                    this.$store.commit('clearRememberUser')
+                  }
+                }
+              })
               this.$router.push({
                 path: '/HelloWorld',
                 query: {id: res.code}
