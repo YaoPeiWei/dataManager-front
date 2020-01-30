@@ -17,6 +17,24 @@ const routes = [
     path: '/login',
     name: 'Login',
     component: () => import('./modular/Login/components/Login')
+  },
+  {
+    path: '/index',
+    name: 'index',
+    component: () => import('./modular/Index/components/Index'),
+    redirect: '/index/order',
+    children: [
+      {
+        path: 'order',
+        name: 'order',
+        component: () => import('./modular/Order/components/OrderIndex')
+      },
+      {
+        path: 'HelloWorld',
+        name: 'HelloWorld',
+        component: () => import('./modular/HelloWorld')
+      }
+    ]
   }
 ]
 const router = new VueRouter({

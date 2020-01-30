@@ -112,8 +112,7 @@ export default {
                 }
               })
               this.$router.push({
-                path: '/HelloWorld',
-                query: {id: res.code}
+                path: '/index'
               })
             } else {
               this.$message.error(res.msg)
