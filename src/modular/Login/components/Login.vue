@@ -97,27 +97,30 @@ export default {
         if (!err) {
           // console.log('Received values of form: ', values)
           this.loading = true
-          dologin('/user/login/security/doLogin', values).then(res => {
-            if (res.code === 103) {
-              getLoginUser('/user/ReturnLoginUser', null).then(res => {
-                if (res.code === 0) {
-                  this.$store.commit('setLoginUser', res.result)
-                  // 记住我功能处理
-                  if (values.rememberMe) {
-                    this.$store.commit('setRememberUser', res.result)
-                  } else {
-                    this.$store.commit('clearRememberUser')
-                  }
-                }
-              })
+          setTimeout(() => {
+            dologin('/user/login/security/doLogin', values).then(res => {
               this.loading = false
-              this.$router.push({
-                path: '/index'
-              })
-            } else {
-              this.$message.error(res.msg)
-            }
-          })
+              if (res.code === 103) {
+                getLoginUser('/user/ReturnLoginUser', null).then(res => {
+                  if (res.code === 0) {
+                    this.$store.commit('setLoginUser', res.result)
+                    // 记住我功能处理
+                    if (values.rememberMe) {
+                      this.$store.commit('setRememberUser', res.result)
+                    } else {
+                      this.$store.commit('clearRememberUser')
+                    }
+                  }
+                })
+                this.$message.success('登陆成功')
+                this.$router.push({
+                  path: '/index'
+                })
+              } else {
+                this.$message.error(res.msg)
+              }
+            })
+          }, 2000)
         }
       })
     }
