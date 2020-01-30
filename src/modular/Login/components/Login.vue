@@ -48,7 +48,7 @@
               Forgot password
             </a>
             <a-button type="primary" html-type="submit" class="login-form-button" @click="handleSubmit">
-              Log in
+              Login
             </a-button>
             <div class="login-form-register">
               Or
@@ -91,14 +91,13 @@ export default {
         }, 0)
       }
     },
-    handleSubmit (e) {
+    async handleSubmit (e) {
       // e.preventDefault()
       this.form.validateFields((err, values) => {
         if (!err) {
           // console.log('Received values of form: ', values)
           this.loading = true
           dologin('/user/login/security/doLogin', values).then(res => {
-            this.loading = false
             if (res.code === 103) {
               getLoginUser('/user/ReturnLoginUser', null).then(res => {
                 if (res.code === 0) {
@@ -111,6 +110,7 @@ export default {
                   }
                 }
               })
+              this.loading = false
               this.$router.push({
                 path: '/index'
               })
