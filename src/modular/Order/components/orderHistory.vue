@@ -82,7 +82,7 @@ export default {
 <style scoped>
 .scroller {
   overflow-y: auto;
-  height: 500px;
+  height: 600px;
 }
 .pStyle {
   fontSize: '16px';

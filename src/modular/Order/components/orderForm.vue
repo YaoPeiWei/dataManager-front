@@ -5,7 +5,7 @@
       <div @click="showCarParking">
         <a-progress type="circle" :percent="percent" :format="() => tip"/>
       </div>
-      <a-form :form="form" @submit="handleSubmit" style="margin-top: 20px">
+      <a-form :form="form" style="margin-top: 20px">
         <a-form-item v-bind="formItemLayout" label="车牌号" :colon="false">
           <a-input v-decorator="['carNumber']" v-show="false"></a-input>
           <p v-if="carPark.carNumber">{{ carPark.carNumber }}</p>
@@ -31,7 +31,7 @@
         sm: { span: 3, offset: 21 },
       }"
         >
-          <a-button type="primary" html-type="submit">
+          <a-button type="primary" @click="handleSubmit">
             Submit
           </a-button>
         </a-form-item>
