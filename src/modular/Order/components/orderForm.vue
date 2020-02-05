@@ -8,15 +8,15 @@
       <a-form :form="form" style="margin-top: 20px">
         <a-form-item v-bind="formItemLayout" label="车牌号" :colon="false">
           <a-input v-decorator="['carNumber']" v-show="false"></a-input>
-          <p v-if="carPark.carNumber">{{ carPark.carNumber }}</p>
+          <div v-if="carPark.carNumber">{{ carPark.carNumber }}</div>
         </a-form-item>
         <a-form-item v-bind="formItemLayout" label="车位位置" :colon="false" v-if="selected">
           <a-input v-decorator="['location']" v-show="false"></a-input>
-          <p v-if="carPark.location">{{ carPark.location}}</p>
+          <div v-if="carPark.location">{{ carPark.location}}</div>
         </a-form-item>
         <a-form-item v-bind="formItemLayout" label="每小时费用" :colon="false" v-if="selected">
           <a-input v-decorator="['price']" v-show="false"></a-input>
-          <p v-if="carPark.price">{{ carPark.price}} $</p>
+          <div v-if="carPark.price">{{ carPark.price}} $</div>
         </a-form-item>
         <a-form-item v-bind="formItemLayout" label="停车时间" :colon="false">
           <a-date-picker

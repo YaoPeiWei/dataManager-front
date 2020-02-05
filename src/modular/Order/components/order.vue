@@ -1,5 +1,5 @@
 <template>
-    <div id="content" style="min-height: 600px">
+    <div id="content" style="min-height: 550px">
       <div id="order">
         <a-empty
           v-if="visible"

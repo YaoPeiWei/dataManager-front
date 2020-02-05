@@ -112,7 +112,7 @@ export default {
 <style scoped>
 .scroller {
   overflow-y: auto;
-  height: 600px;
+  height: 550px;
   padding-top: 15px;
   text-align: left;
 }
