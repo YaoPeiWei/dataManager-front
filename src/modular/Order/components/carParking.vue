@@ -94,7 +94,7 @@
         </a-col>
       </a-row>
       <a-row>
-        <a-pagination v-if="pagination.pages>0" simple v-model="pagination.current" :total="pagination.total" style="float: right;margin-top: 10px"/>
+        <a-pagination v-if="pagination.pages>0" simple v-model="pagination.current" :total="pagination.total" :pageSize="pagination.size" @change="pageSizeChange" style="float: right;margin-top: 10px"/>
       </a-row>
     </a-modal>
 </template>
@@ -139,7 +139,7 @@ const columns = [
     scopedSlots: { customRender: 'isRoom' }
   },
   {
-    title: '是否在停',
+    title: '在停',
     dataIndex: 'isParking',
     width: '10%',
     scopedSlots: { customRender: 'isParking' }
@@ -159,7 +159,7 @@ export default {
       location: 'XXXXXXX',
       pagination: {
         current: 0,
-        size: 5,
+        size: 2,
         pages: 0,
         total: 0
       },
@@ -190,6 +190,7 @@ export default {
       getCarPark('/carPark/getCarPark', param).then(res => {
         if (res.code === 0) {
           this.data = res.result.records
+          this.pagination.current = res.result.current
           this.pagination.total = res.result.total
           this.pagination.pages = res.result.pages
         } else {
@@ -197,6 +198,10 @@ export default {
           this.$emit('finishSelect')
         }
       })
+    },
+    pageSizeChange (page, pageSize) {
+      this.pagination.current = page
+      this.initData()
     },
     handleSubmit () {
       this.initData()
