@@ -1,55 +1,58 @@
 <template>
   <div class="scroller">
-    <a-timeline>
-      <a-timeline-item color="green">
-        <a-popover placement="leftTop">
-          <template slot="content">
-            <p>Content</p>
-          </template>
-          <template slot="title">
-            <span>第一单 site 2015-09-01</span>
-          </template>
-          第一单 site 2015-09-01
-        </a-popover>
-      </a-timeline-item>
-      <a-timeline-item color="green">第一单 site 2015-09-01</a-timeline-item>
-      <a-timeline-item color="green">第一单 site 2015-09-01</a-timeline-item>
-      <a-timeline-item color="green">第一单 site 2015-09-01</a-timeline-item>
-      <a-timeline-item color="green">第一单 site 2015-09-01</a-timeline-item>
-      <a-timeline-item color="green">第一单 site 2015-09-01</a-timeline-item>
-      <a-timeline-item color="green">第一单 site 2015-09-01</a-timeline-item>
-      <a-timeline-item color="green">第一单 site 2015-09-01</a-timeline-item>
-      <a-timeline-item color="green">第一单 site 2015-09-01</a-timeline-item>
-      <a-timeline-item color="green">第一单 site 2015-09-01</a-timeline-item>
-      <a-timeline-item color="green">第一单 site 2015-09-01</a-timeline-item>
-      <a-timeline-item color="green">第一单 site 2015-09-01</a-timeline-item>
-      <a-timeline-item color="green">
-        <a-popover placement="leftBottom">
-          <template slot="content">
-            <p><a @click="showDrawer">Content</a></p>
-          </template>
-          <template slot="title">
-            <span>第一单 site 2015-09-01</span>
-          </template>
-          第一单 site 2015-09-01
-        </a-popover>
-      </a-timeline-item>
-      <a-timeline-item color="red">
-        <p>失败订单  site 2015-09-01</p>
-      </a-timeline-item>
-      <a-timeline-item>
-        <p>进行中订单 3 2015-09-01</p>
-      </a-timeline-item>
+    <a-timeline pending="未来可期">
+      <div v-for="(order,index) in data" :key="order.id">
+        <a-timeline-item :color="order.finishFlag === '1'?(order.isFail=== '1'?'green':'red'):'blue'">
+          <a-popover placement="leftTop">
+            <template slot="content">
+              <p><a @click="showDrawer(order)">Content</a></p>
+            </template>
+            <template slot="title">
+              <span>第{{index+1}}单<span v-if="order.finishTime">: {{order.finishTime}}</span></span>
+            </template>
+            第{{index+1}}单<span v-if="order.finishTime">: {{order.finishTime}}</span>
+          </a-popover>
+        </a-timeline-item>
+      </div>
     </a-timeline>
     <a-drawer width="350" placement="right" :closable="false" :visible="visible" title="订单详情" @close="onClose">
-      <p class="pStyle">User Profile</p>
-      <p class="pStyle">Personal</p>
+      <p class="pStyle">订单信息</p>
       <a-row>
         <a-col :span="12">
-          <description title="Full Name" content="Lily" />
+          <description title="车牌号" :content="order.carNumber" />
         </a-col>
         <a-col :span="12">
-          <description title="Account" content="AntDesign@example.com" />
+          <description title="费用($)" :content="order.price" />
+        </a-col>
+      </a-row>
+      <a-row>
+        <a-col :span="24">
+          <description title="预约时间" :content="order.appointmentTime" />
+        </a-col>
+      </a-row>
+      <a-row>
+        <a-col :span="24">
+          <description title="结束时间" :content="order.finishTime" />
+        </a-col>
+      </a-row>
+      <a-divider>With Text</a-divider>
+      <p class="pStyle">车位信息</p>
+      <a-row>
+        <a-col :span="12">
+          <description title="区域" :content="carPark.region" />
+        </a-col>
+        <a-col :span="12">
+          <description title="状态" :content="carPark.isRoom === '0'?'室外':'室内'" />
+        </a-col>
+      </a-row>
+      <a-row>
+        <a-col :span="12">
+          <description title="每小时单价($)" :content="carPark.price" />
+        </a-col>
+      </a-row>
+      <a-row>
+        <a-col :span="24">
+          <description title="车位位置" :content="carPark.location" />
         </a-col>
       </a-row>
     </a-drawer>
@@ -57,6 +60,7 @@
 </template>
 
 <script>
+import {getLoginUserOrders, getCarParkByID} from '../api/carPark'
 import description from '../../Index/components/description'
 export default {
   name: 'orderHistory',
@@ -65,12 +69,38 @@ export default {
   },
   data () {
     return {
-      visible: false
+      visible: false,
+      data: [],
+      order: {},
+      carPark: {}
     }
   },
+  mounted () {
+    this.initData()
+  },
   methods: {
-    showDrawer () {
+    initData () {
+      getLoginUserOrders('/order/getLoginUserOrders').then(res => {
+        // console.log(res)
+        if (res.code === 0) {
+          this.data = res.result
+        } else {
+          this.$message.error(res.msg)
+        }
+      })
+    },
+    showDrawer (data) {
       this.visible = true
+      this.order = data
+      getCarParkByID('/carPark/getCarParkByID', {id: data.carparkId}).then(res => {
+        // console.log(res)
+        if (res.code === 0) {
+          this.carPark = {}
+          this.carPark = res.result
+        } else {
+          this.$message.error(res.msg)
+        }
+      })
     },
     onClose () {
       this.visible = false
@@ -83,9 +113,13 @@ export default {
 .scroller {
   overflow-y: auto;
   height: 600px;
+  padding-top: 15px;
+  text-align: left;
 }
 .pStyle {
+  padding: auto;
   fontSize: '16px';
+  font-weight: bolder;
   color: rgba(0,0,0,0.85);
   lineHeight: '24px';
   display: block;
