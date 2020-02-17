@@ -45,6 +45,8 @@
 
 <script>
 import carParking from './carParking'
+import {inserOrder} from '../api/order'
+
 export default {
   name: 'orderForm',
   beforeCreate () {
@@ -75,6 +77,7 @@ export default {
       selected: false,
       tip: '选择车位',
       carPark: {
+        id: undefined,
         carNumber: undefined,
         price: undefined,
         location: undefined
@@ -117,6 +120,7 @@ export default {
       if (data) {
         this.selected = true
         setTimeout(() => {
+          this.carPark.id = data.id
           this.carPark.price = data.price
           this.carPark.location = data.location
           this.form.setFieldsValue({
@@ -130,6 +134,21 @@ export default {
       this.form.validateFields((err, values) => {
         if (!err) {
           console.log(values)
+          const param = {
+            carparkId: this.carPark.id,
+            price: values.price,
+            carNumber: values.carNumber,
+            appointmentTime: values.parkTime
+          }
+          inserOrder('/order/insert/addOrder', param).then(res => {
+            if (res.code === 0) {
+              this.$message.success(res.msg)
+              this.$emit('insertOrder',true)
+            } else {
+              this.$message.error(res.msg)
+              this.$emit('finishSelect')
+            }
+          })
         }
       })
     }

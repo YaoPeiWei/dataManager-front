@@ -9,7 +9,7 @@
             <span slot="description"> Customize <a href="#API">Description</a> </span>
             <a-button type="primary" @click="createCarParking">Create Now</a-button>
           </a-empty>
-          <order-form v-if="!visible" @close="createCarParking"></order-form>
+          <order-form v-if="!visible" @close="createCarParking" @insertOrder="insertOrder"></order-form>
         </div>
         <div id="ordering" v-show="hasOrder">
           <ordering ref="ordering"></ordering>
@@ -49,6 +49,9 @@ export default {
     },
     createCarParking () {
       this.visible = !this.visible
+    },
+    insertOrder () {
+      this.showOrder()
     }
   }
 }
