@@ -88,6 +88,9 @@ export default {
       let flag = false
       await getLoginUserUnFinishedOrder('/order/getLoginUserUnFinishedOrder').then(res => {
         if (res.code === 0) {
+          if (!res.result.comptime) {
+            return false
+          }
           flag = true
           // console.log(res.result)
           this.order.dprice = res.result.dprice
@@ -99,7 +102,7 @@ export default {
           this.showTimer(this.order.comptime)
           // 设置费用
           this.hasOrder = true
-          this.computePrice()
+          // this.computePrice()
           getCarParkByID('/carPark/getCarParkByID', {id: res.result.carparkId}).then(res => {
             if (res.code === 0) {
               this.carPark = res.result

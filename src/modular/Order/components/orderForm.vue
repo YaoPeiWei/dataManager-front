@@ -136,7 +136,7 @@ export default {
           console.log(values)
           const param = {
             carparkId: this.carPark.id,
-            price: values.price,
+            dprice: values.price,
             carNumber: values.carNumber,
             appointmentTime: values.parkTime
           }
