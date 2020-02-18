@@ -143,7 +143,7 @@ export default {
           inserOrder('/order/insert/addOrder', param).then(res => {
             if (res.code === 0) {
               this.$message.success(res.msg)
-              this.$emit('insertOrder',true)
+              this.$emit('insertOrder', true)
             } else {
               this.$message.error(res.msg)
               this.$emit('finishSelect')

@@ -52,6 +52,18 @@ export default {
     },
     insertOrder () {
       this.showOrder()
+      this.openNotification()
+    },
+    openNotification () {
+      this.$notification.open({
+        message: '我们的故事从这开始了',
+        icon: <a-icon type='check' style='color: #108ee9' />,
+        description:
+          '恭喜您预约成功，请在指定时间内到达停车位停车',
+        onClick: () => {
+          console.log('Notification Clicked!')
+        }
+      })
     }
   }
 }
