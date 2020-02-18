@@ -2,7 +2,12 @@
   <a-layout id="components-layout-demo-fixed-sider">
     <a-layout-sider :style="{ overflow: 'auto', height: '100vh', position: 'fixed', left: 0 }">
       <div class="logo">
-        <a-avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" :size="100"/>
+        <div v-if="flag">
+          <a-avatar :src="touxiang" :size="100"/>
+        </div>
+        <div v-else>
+          <a-avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" :size="100"/>
+        </div>
       </div>
       <a-menu theme="dark" mode="inline" :defaultSelectedKeys="selectKeys" class="menu">
         <a-menu-item key="order">
@@ -47,16 +52,34 @@ export default {
   name: 'sidebar',
   data () {
     return {
-      selectKeys: []
+      selectKeys: [],
+      touxiang: undefined,
+      flag: false
+    }
+  },
+  watch: {
+    touxiang (val) {
+      if (this.touxiang) {
+        this.flag = true
+      } else {
+        this.flag = false
+      }
     }
   },
   mounted () {
     this.initSelectKeys()
+    this.loadTouXiang()
   },
   methods: {
     initSelectKeys () {
       // console.log(this.$route.path.split('/'))
       this.selectKeys.push(this.$route.path.split('/')[2].toString())
+    },
+    loadTouXiang () {
+      const user = this.$store.getters.getLoginUser
+      if (user) {
+        this.touxiang = 'http://localhost:8080/api/attach/getAttachByUid?uid=' + user.id
+      }
     }
   }
 }
@@ -71,6 +94,9 @@ export default {
   /*  border-radius: 300px;*/
   /*}*/
   #components-layout-demo-fixed-sider .menu {
+    margin-top: 20px;
+  }
+  .logo{
     margin-top: 20px;
   }
 </style>
