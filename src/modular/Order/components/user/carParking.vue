@@ -100,7 +100,7 @@
 </template>
 
 <script>
-import {getCarPark} from '../api/carPark'
+import {getCarPark} from '../../api/carPark'
 const columns = [
   {
     title: '车位位置',

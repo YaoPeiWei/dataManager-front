@@ -60,9 +60,9 @@
 </template>
 
 <script>
-import {getCarParkByID} from '../api/carPark'
-import {getLoginUserOrders} from '../api/order'
-import description from '../../Index/components/description'
+import {getCarParkByID} from '../../api/carPark'
+import {getLoginUserOrders} from '../../api/order'
+import description from '../../../Index/components/description'
 export default {
   name: 'orderHistory',
   components: {

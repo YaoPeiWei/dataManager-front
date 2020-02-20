@@ -27,7 +27,7 @@ const routes = [
       {
         path: 'order',
         name: 'order',
-        component: () => import('./modular/Order/components/OrderIndex')
+        component: () => import('./modular/Order/components/user/OrderIndex')
       },
       {
         path: 'HelloWorld',

@@ -10,7 +10,7 @@
 </template>
 
 <script>
-import business from './business'
+import business from '../common/business'
 import order from './order'
 export default {
   name: 'OrderIndex',

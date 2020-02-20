@@ -56,9 +56,9 @@
 </template>
 
 <script>
-import {getLoginUserUnFinishedOrder} from '../api/order'
-import {getCarParkByID} from '../api/carPark'
-import Timer from './Timer'
+import {getLoginUserUnFinishedOrder} from '../../api/order'
+import {getCarParkByID} from '../../api/carPark'
+import Timer from '../common/Timer'
 export default {
   name: 'ordering',
   data () {

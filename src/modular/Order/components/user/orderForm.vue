@@ -45,7 +45,7 @@
 
 <script>
 import carParking from './carParking'
-import {inserOrder} from '../api/order'
+import {inserOrder} from '../../api/order'
 
 export default {
   name: 'orderForm',
