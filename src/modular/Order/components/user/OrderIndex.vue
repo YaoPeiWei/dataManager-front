@@ -1,5 +1,5 @@
 <template>
-  <div :style="{ padding: '24px', background: '#fff', textAlign: 'center' }">
+  <div :style="{ padding: '24px', background: '#fff', textAlign: 'center',minHeight: '600px' }">
     <div class="business">
       <business></business>
     </div>
