@@ -38,6 +38,7 @@ export default {
   data () {
     return {
       tab: 'unFinishedOrder',
+      key: '0',
       tabList: [
         {
           key: '0',
@@ -58,6 +59,7 @@ export default {
     onTabChange (key) {
       const tab = this.tabList.filter(item => item.key === key)
       this.tab = tab[0].tabId
+      this.key = tab[0].key
     }
   }
 }
