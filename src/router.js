@@ -33,6 +33,11 @@ const routes = [
         path: 'HelloWorld',
         name: 'HelloWorld',
         component: () => import('./modular/HelloWorld')
+      },
+      {
+        path: 'adminOrderIndex',
+        name: 'adminOrderIndex',
+        component: () => import('./modular/Order/components/admin/adminOrderIndex')
       }
     ]
   }

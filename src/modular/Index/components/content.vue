@@ -19,4 +19,7 @@ export default {
 </script>
 
 <style scoped>
+  .ant-layout{
+    background: white;
+  }
 </style>

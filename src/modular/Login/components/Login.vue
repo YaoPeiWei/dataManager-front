@@ -113,9 +113,18 @@ export default {
                   }
                 })
                 this.$message.success('登陆成功')
-                this.$router.push({
-                  path: '/index'
-                })
+                const flag = 'admin'
+                if (flag === 'user') {
+                  this.$router.push({
+                    path: '/index'
+                  })
+                } else if (flag === 'admin') {
+                  this.$router.push({
+                    path: '/index/adminOrderIndex'
+                  })
+                } else {
+                  // 用户权限问题
+                }
               } else {
                 this.$message.error(res.msg)
               }
