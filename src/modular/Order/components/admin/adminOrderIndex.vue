@@ -1,7 +1,7 @@
 <template>
   <div class="adminOrderIndex">
     <a-card
-      style="width:100%"
+      style="width:100%;min-height: 600px"
       title="订单"
       :tabList="tabList"
       :activeTabKey="key"
