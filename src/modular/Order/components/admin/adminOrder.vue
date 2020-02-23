@@ -121,12 +121,12 @@ const columns = [
   {
     title: '停车状态',
     dataIndex: 'state',
-    width: '10%',
+    width: '9%',
     scopedSlots: { customRender: 'state' }
   },
   {
     title: '操作',
-    width: '20%',
+    width: '21%',
     scopedSlots: { customRender: 'action' }
   }
 ]
