@@ -113,12 +113,12 @@ export default {
                   }
                 })
                 this.$message.success('登陆成功')
-                const flag = 'admin'
-                if (flag === 'user') {
+                const flag = false
+                if (flag) {
                   this.$router.push({
                     path: '/index'
                   })
-                } else if (flag === 'admin') {
+                } else if (!flag) {
                   this.$router.push({
                     path: '/index/adminOrderIndex'
                   })
