@@ -61,7 +61,7 @@
             </template>
             <template slot="action" slot-scope="record">
               <a-button-group>
-                <a-button type="primary" size="small" style="float: left">
+                <a-button type="primary" size="small" style="float: left" @click="ParkingOrder(record.id)">
                   <a-icon type="lock"/>停车
                 </a-button>
                 <a-button type="danger" size="small" style="float: left">
@@ -80,7 +80,7 @@
 </template>
 
 <script>
-import {getUnFinishedOrder} from '@/modular/Order/api/order'
+import {getUnFinishedOrder, ParkingOrder} from '@/modular/Order/api/order'
 const columns = [
   {
     title: '预约用户',
@@ -183,7 +183,6 @@ export default {
       this.initData()
     },
     selectSubmit () {
-      const _this = this
       this.loading = true
       setTimeout(() => {
         this.initData()
@@ -195,7 +194,6 @@ export default {
       let endTime = Date.parse(new Date())// 指定时间的时间戳
       // 计算相差天数
       let timeDis = endTime - nowTime
-      let days = Math.floor(timeDis / (24 * 3600 * 1000))
       // 计算出小时数
       let leave1 = timeDis % (24 * 3600 * 1000)// 计算天数后剩余的毫秒数
       let hours = Math.floor(leave1 / (3600 * 1000))
@@ -206,11 +204,21 @@ export default {
       let leave3 = leave2 % (60 * 1000)// 计算小时数后剩余的毫秒数
       let second = leave3 / 1000
       let date = new Date()
-      date.set
       date.setHours(hours)
       date.setMinutes(minutes)
       date.setSeconds(second)
       return date
+    },
+    ParkingOrder (id) {
+      const param = {id: id, park: '1'}
+      ParkingOrder('/order/ParkingOrder', param).then(res => {
+        if (res.code === 0) {
+          this.$message.success('停车成功')
+          this.initData()
+        } else {
+          this.$message.error(res.msg)
+        }
+      })
     }
   }
 }
