@@ -14,7 +14,7 @@
       <a-menu theme="dark" mode="inline" :defaultSelectedKeys="selectKeys" class="menu">
         <a-menu-item key="adminOrderIndex">
           <a-icon type="video-camera" />
-          <span class="nav-text">adminOrder</span>
+          <span class="nav-text">订单</span>
         </a-menu-item>
         <a-menu-item key="order">
           <a-icon type="bar-chart" />
