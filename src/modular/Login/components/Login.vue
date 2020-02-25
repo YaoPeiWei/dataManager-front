@@ -98,8 +98,8 @@ export default {
           // console.log('Received values of form: ', values)
           this.loading = true
           setTimeout(() => {
+            this.loading = false
             dologin('/user/login/security/doLogin', values).then(res => {
-              this.loading = false
               if (res.code === 103) {
                 getLoginUser('/user/ReturnLoginUser', null).then(res => {
                   if (res.code === 0) {
@@ -112,19 +112,17 @@ export default {
                     }
                   }
                 })
-                this.$message.success('登陆成功')
                 const flag = false
                 if (flag) {
                   this.$router.push({
                     path: '/index'
                   })
-                } else if (!flag) {
+                } else {
                   this.$router.push({
                     path: '/index/adminOrderIndex'
                   })
-                } else {
-                  // 用户权限问题
                 }
+                this.$message.success('登陆成功')
               } else {
                 this.$message.error(res.msg)
               }
