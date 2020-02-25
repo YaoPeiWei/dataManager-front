@@ -53,7 +53,7 @@
               {{dprice}} $/h
             </template>
             <template slot="billTime" slot-scope="billTime">
-              {{billTime}} /h
+              {{billTime}} <span v-if="billTime">/h</span><div v-else>-</div>
             </template>
             <template slot="state" slot-scope="state">
               <a-badge :status="state === '0'?'warning':'processing'" style="float: left"/>
@@ -64,7 +64,7 @@
                 <a-button type="primary" size="small" style="float: left" @click="ParkingOrder(record.id)">
                   <a-icon type="lock"/>停车
                 </a-button>
-                <a-button type="danger" size="small" style="float: left">
+                <a-button type="danger" size="small" style="float: left" @click="NoParking(record)">
                   <a-icon type="unlock"/>待停
                 </a-button>
               </a-button-group>
@@ -75,12 +75,16 @@
       <a-row>
         <a-pagination v-if="pagination.pages>0" simple v-model="pagination.current" :total="pagination.total" :pageSize="pagination.size" @change="pageSizeChange" style="float: right;margin-top: 10px"/>
       </a-row>
+      <div>
+        <enterPasswork ref="enterPasswork" @parkOrderSuccess="initData"></enterPasswork>
+      </div>
     </a-spin>
   </div>
 </template>
 
 <script>
 import {getUnFinishedOrder, ParkingOrder} from '@/modular/Order/api/order'
+import enterPasswork from './enterPasswork'
 const columns = [
   {
     title: '预约用户',
@@ -132,6 +136,9 @@ const columns = [
 ]
 export default {
   name: 'adminOrder',
+  components: {
+    enterPasswork
+  },
   data () {
     return {
       form: this.$form.createForm(this),
@@ -219,6 +226,9 @@ export default {
           this.$message.error(res.msg)
         }
       })
+    },
+    NoParking(data) {
+      this.$refs.enterPasswork.showModal(data)
     }
   }
 }
