@@ -227,7 +227,7 @@ export default {
         }
       })
     },
-    NoParking(data) {
+    NoParking (data) {
       this.$refs.enterPasswork.showModal(data)
     }
   }
