@@ -9,8 +9,14 @@ const store = new Vuex.Store({
     RememberUser: 'RememberUser' // 记住用户KEY => 具体账号信息存在localstore 中
   },
   getters: {
-    getLoginUser: state => JSON.parse(sessionStorage.getItem(state.User)),
-    getRememberUser: state => JSON.parse(localStorage.getItem(state.RememberUser))
+    getLoginUser: state => {
+      const user = JSON.parse(sessionStorage.getItem(state.User))
+      return user
+    },
+    getRememberUser: state => {
+      const RememberMe = JSON.parse(localStorage.getItem(state.RememberUser))
+      return RememberMe
+    }
   },
   // mutations => 一般是同步操作, this.$store.commit('mutations方法名', 值)
   mutations: {

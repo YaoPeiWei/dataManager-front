@@ -52,7 +52,7 @@
             </a-button>
             <div class="login-form-register">
               Or
-              <a href="">
+              <a href="javascript:;" @click="Register">
                 register now!
               </a>
             </div>
@@ -60,16 +60,22 @@
         </a-form>
       </a-col>
     </a-row>
+    <a-row>
+      <Register ref="Register"></Register>
+    </a-row>
   </a-spin>
 </template>
 
 <script>
 import {dologin, getLoginUser} from '../api/login'
-
+import Register from './Register'
 export default {
   name: 'Login',
   beforeCreate () {
     this.form = this.$form.createForm(this)
+  },
+  components: {
+    Register
   },
   data () {
     return {
@@ -110,19 +116,19 @@ export default {
                     } else {
                       this.$store.commit('clearRememberUser')
                     }
+                    const flag = false
+                    if (flag) {
+                      this.$router.push({
+                        path: '/index'
+                      })
+                    } else {
+                      this.$router.push({
+                        path: '/index/adminOrderIndex'
+                      })
+                    }
+                    this.$message.success('登陆成功')
                   }
                 })
-                const flag = false
-                if (flag) {
-                  this.$router.push({
-                    path: '/index'
-                  })
-                } else {
-                  this.$router.push({
-                    path: '/index/adminOrderIndex'
-                  })
-                }
-                this.$message.success('登陆成功')
               } else {
                 this.$message.error(res.msg)
               }
@@ -130,6 +136,9 @@ export default {
           }, 2000)
         }
       })
+    },
+    Register () {
+      this.$refs.Register.showDrawer()
     }
   }
 }
