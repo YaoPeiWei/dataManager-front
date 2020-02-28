@@ -1,0 +1,183 @@
+<template>
+  <a-drawer
+    title="注册"
+    :width="520"
+    @close="onClose"
+    :visible="visible"
+    :wrapStyle="{height: 'calc(100% - 108px)',overflow: 'auto',paddingBottom: '108px'}"
+  >
+    <a-form :form="form" layout="vertical">
+      <a-row :gutter="24">
+        <a-col :span="24">
+          <a-form-item label="账号"
+                       :label-col="{ span: 4 }"
+                       :wrapper-col="{ span: 20 }">
+            <a-input
+              v-decorator="['uname', {
+                  rules: [{ required: true, message: '请输入你的账号' }]
+                }]"
+              placeholder="请输入你的账号"
+            />
+          </a-form-item>
+        </a-col>
+        <a-col :span="24">
+          <a-form-item label="密码"
+                       :label-col="{ span: 4 }"
+                       :wrapper-col="{ span: 20 }">
+            <a-input-password v-decorator="['password',{
+              rules: [{ required: true, message: '请输入密码' }] },
+              ]"
+              type="password"
+              placeholder="请输入你的密码"
+                              autocomplete="off"
+            >
+              <a-icon slot="prefix" type="lock" style="color: rgba(0,0,0,.25)" />
+            </a-input-password>
+          </a-form-item>
+        </a-col>
+      </a-row>
+      <a-row :gutter="24">
+        <a-col :span="24">
+          <a-form-item label="用户名"
+                       :label-col="{ span: 4 }"
+                       :wrapper-col="{ span: 20 }">
+            <a-input
+              v-decorator="['username', {
+                  rules: [{ required: true, message: '请输入你的用户名' }]
+                }]"
+              placeholder="请输入你的用户名"
+              autocomplete="off"
+            />
+          </a-form-item>
+        </a-col>
+        <a-col :span="24">
+          <a-form-item label="联系方式"
+                       :label-col="{ span: 4 }"
+                       :wrapper-col="{ span: 20 }">
+            <a-input
+              v-decorator="['phone', {
+                  rules: [{ required: true, message: '请输入你的联系方式' }]
+                }]"
+              placeholder="请输入你的联系方式"
+            />
+          </a-form-item>
+        </a-col>
+      </a-row>
+      <a-row :gutter="24">
+        <a-col :span="24">
+          <a-form-item label="电子邮箱"
+                       :label-col="{ span: 4 }"
+                       :wrapper-col="{ span: 20 }">
+            <a-input
+              v-decorator="['mail', {
+                  rules: [{ required: true, message: '请输入你的邮箱' }]
+                }]"
+              placeholder="请输入你的邮箱"
+            />
+          </a-form-item>
+        </a-col>
+        <a-col :span="24">
+          <a-form-item label="出生日期"
+                       :label-col="{ span: 4 }"
+                       :wrapper-col="{ span: 20 }">
+            <a-date-picker
+              v-decorator="['birthdate',{
+                  rules: [{ required: true, message: '请选择你的出生日期' }]
+                }]"
+              style="width: 100%"
+              :getPopupContainer="trigger => trigger.parentNode"
+            />
+          </a-form-item>
+        </a-col>
+      </a-row>
+      <a-row>
+        <a-col :span="24">
+          <a-form-item label="车牌号码"
+                       :label-col="{ span: 4 }"
+                       :wrapper-col="{ span: 20 }">
+            <CarNumberUploadComp
+              v-decorator="[
+                'carNumber',
+                {
+                  rules: [{ required: true, message: '请上传图片' }]
+                }
+              ]"
+               ref="CarNumberUploadComp"
+              @uploadBack="uploadBack"
+            ></CarNumberUploadComp>
+          </a-form-item>
+        </a-col>
+      </a-row>
+    </a-form>
+    <div
+      :style="{
+          position: 'absolute',
+          left: 0,
+          bottom: 0,
+          width: '100%',
+          borderTop: '1px solid #e9e9e9',
+          padding: '10px 16px',
+          background: '#fff',
+          textAlign: 'right',
+        }"
+    >
+      <a-button :style="{marginRight: '8px'}" @click="onClose">
+        Cancel
+      </a-button>
+      <a-button @click="submit" type="primary" :loading="loading">Submit</a-button>
+    </div>
+  </a-drawer>
+</template>
+
+<script>
+import CarNumberUploadComp from './CarNumberUploadComp'
+import { register } from '../api/login'
+export default {
+  name: 'Register',
+  components: {
+    CarNumberUploadComp
+  },
+  data () {
+    return {
+      form: this.$form.createForm(this),
+      visible: false,
+      loading: false
+    }
+  },
+  methods: {
+    showDrawer () {
+      this.visible = true
+    },
+    onClose () {
+      this.visible = false
+    },
+    uploadBack (carNumber) {
+      setTimeout(() => {
+        this.form.setFieldsValue({
+          carNumber: carNumber
+        })
+      }, 0)
+    },
+    submit () {
+      this.form.validateFields((err, values) => {
+        if (!err) {
+          this.loading = true
+          register('/user/register', values).then(res => {
+            this.loading = false
+            if (res.code === 0) {
+              this.$message.success('注册成功')
+              this.onClose()
+            } else {
+              this.$message.error(res.msg)
+            }
+          })
+        }
+      })
+    }
+  }
+}
+</script>
+
+<style scoped>
+
+</style>
