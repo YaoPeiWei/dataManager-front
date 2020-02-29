@@ -50,7 +50,7 @@
         </a-menu-item>
       </a-menu>
       <div class="sidebarFooter">
-        <div class="edit">
+        <div class="edit" @click="edit">
           <div style="margin-top: 10px;border-right: solid 1px #e8e8e8;cursor: pointer" @mouseover="changEditColor" @mouseout="overLeave">
             <a-icon type="edit" v-if="!over"/>
             <a-icon type="edit" :style="{ color: 'hotpink' }" v-if="over"/>
@@ -68,6 +68,9 @@
           </div>
         </div>
       </div>
+      <a-row>
+        <Edit ref="Edit"></Edit>
+      </a-row>
     </a-layout-sider>
   </a-layout>
 </template>
@@ -75,7 +78,7 @@
 <script>
 import {logout} from '../api/sidebar'
 import {delCookie} from '../../../cookie'
-
+import Edit from '../../Login/components/Edit'
 export default {
   name: 'sidebar',
   data () {
@@ -89,6 +92,9 @@ export default {
       over: false,
       lover: false
     }
+  },
+  components: {
+    Edit
   },
   watch: {
     touxiang (val) {
@@ -139,6 +145,9 @@ export default {
           this.$message.error('注销失败')
         }
       })
+    },
+    edit () {
+      this.$refs.Edit.showDrawer()
     }
   }
 }

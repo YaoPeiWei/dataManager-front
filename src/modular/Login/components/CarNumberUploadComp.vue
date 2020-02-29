@@ -90,6 +90,15 @@ export default {
     },
     uploadBack (number) {
       this.$emit('uploadBack', number)
+    },
+    setCarNumber (val) {
+      if (val) {
+        this.showCarNumber = true
+        this.carNumber = val
+      } else {
+        this.showCarNumber = false
+        this.carNumber = undefined
+      }
     }
   }
 }
