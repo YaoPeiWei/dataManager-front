@@ -5,20 +5,22 @@
         <div>
           <a-col :span="12">
             <a-card>
-              <a-statistic title="费用" :value="order.price" style="margin-right: 50px;margin-bottom: 30px" :valueStyle="{color: '#3f8600'}">
-                <template v-slot:suffix>
-                  $
-                </template>
-                <template v-slot:prefix>
-                  <a-icon type="pay-circle" />
-                  <a-icon type="arrow-up" />
-                </template>
-              </a-statistic>
+              <div style="min-height: 90px">
+                <a-statistic title="费用" :value="order.price" style="margin-right: 50px;margin-bottom: 30px" :valueStyle="{color: '#3f8600'}">
+                  <template v-slot:suffix>
+                    $
+                  </template>
+                  <template v-slot:prefix>
+                    <a-icon type="pay-circle" />
+                    <a-icon type="arrow-up" />
+                  </template>
+                </a-statistic>
+              </div>
             </a-card>
           </a-col>
           <a-col :span="12">
             <a-card>
-              <div style="margin-bottom: 30px">
+              <div style="min-height: 90px">
                 <span style="">停车时长</span>
                 <timer ref="timer" style=" color: #cf1322;margin-top: 4px;font-size: 24px"></timer>
               </div>
@@ -41,6 +43,10 @@
             <span style="margin-left: 20px;font-size: 14px">{{carPark.location}}</span>
           </a-col>
           <a-col :span="12" style="margin-top: 20px">
+            <span style="font-weight: bolder;font-size: 20px"><a-icon type="dashboard" />  订单状态 :</span>
+            <span style="margin-left: 20px;font-size: 14px">{{order.status | filterStatusVal}}</span>
+          </a-col>
+          <a-col :span="12" style="margin-top: 20px" v-if="order.comptime">
             <span style="font-weight: bolder;font-size: 20px"><a-icon type="dashboard" />  预约时间 :</span>
             <span style="margin-left: 20px;font-size: 14px">{{order.comptime}}</span>
           </a-col>
@@ -59,8 +65,12 @@
 import {getLoginUserUnFinishedOrder} from '../../api/order'
 import {getCarParkByID} from '../../api/carPark'
 import Timer from '../common/Timer'
+let that
 export default {
   name: 'ordering',
+  beforeCreate () {
+    that = this
+  },
   data () {
     return {
       order: {
@@ -69,7 +79,8 @@ export default {
         dprice: undefined,
         carNumber: undefined,
         createTime: undefined,
-        price: undefined
+        price: undefined,
+        status: undefined
       },
       carPark: {
         region: undefined,
@@ -77,18 +88,27 @@ export default {
         isRoom: undefined,
         price: undefined
       },
+      status: [
+        {key: '0', val: '待停', class: 'warning'}, {key: '1', val: '在停', class: 'processing'}, {key: '2', val: '待支付', class: 'error'}
+      ],
       hasOrder: false // 控制是否开始计数
     }
   },
   components: {
     Timer
   },
+  filters: {
+    filterStatusVal: (key) => {
+      const array = that.status.filter(item => item.key === key)
+      return array.length > 0 ? array[0].val : null
+    }
+  },
   methods: {
     async initData () {
       let flag = false
       await getLoginUserUnFinishedOrder('/order/getLoginUserUnFinishedOrder').then(res => {
         if (res.code === 0) {
-          if (!res.result.comptime) {
+          if (res.result.status === '3') {
             return false
           }
           flag = true
@@ -98,9 +118,14 @@ export default {
           this.order.appointmentTime = res.result.appointmentTime
           this.order.comptime = res.result.comptime
           this.order.createTime = res.result.createTime
-          // 设置时间
-          this.showTimer(this.order.comptime)
-          // 设置费用
+          this.order.status = res.result.status
+          // 设置时间 ==> 状态为在停时显示
+          if (res.result.status === '1' && res.result.comptime) {
+            this.showTimer(this.order.comptime)
+          }
+          if (res.result.status === '0') {
+            this.$refs.timer.NotimeCreated()
+          }
           this.hasOrder = true
           // this.computePrice()
           getCarParkByID('/carPark/getCarParkByID', {id: res.result.carparkId}).then(res => {
@@ -164,5 +189,7 @@ export default {
 </script>
 
 <style scoped>
-
+.ant-card-body {
+  min-height: 150px;
+}
 </style>

@@ -28,6 +28,9 @@ export default {
       this.seconds = new Date(ptime).getSeconds()
       this.timer = setInterval(this.startTimer, 1000)
     },
+    NotimeCreated () {
+      this.$refs.startTimer.innerHTML = '00' + 'Day  ' + ('00') + ':' + ('00') + ':' + ('00')
+    },
     startTimer () {
       this.seconds += 1
       if (this.seconds >= 60) {
