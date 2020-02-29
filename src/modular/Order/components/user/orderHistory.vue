@@ -5,7 +5,10 @@
         <a-timeline-item :color="order.finishFlag === '1'?(order.isFail=== '1'?'green':'red'):'blue'">
           <a-popover placement="leftTop">
             <template slot="content">
-              <p><a @click="showDrawer(order)">Content</a></p>
+              <div>
+                <span><description title="费用($)" :content="order.price" /></span>
+                <span><a @click="showDrawer(order)">了解更多</a></span>
+              </div>
             </template>
             <template slot="title">
               <span>第{{index+1}}单<span v-if="order.finishTime">: {{order.finishTime}}</span></span>
