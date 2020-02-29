@@ -10,7 +10,7 @@
       :disabled="disabled"
       @change="handleChange"
     >
-      <a-button> <a-icon type="upload" /> 上传车牌号图片  </a-button>
+      <a-button :loading="loading">  上传车牌号图片 <a-icon type="upload"/> </a-button>
     </a-upload>
     <div v-if="showCarNumber">
       <a-tag :color="color" closable @close="colsetag">{{carNumber}}</a-tag>
@@ -29,7 +29,8 @@ export default {
       color: undefined,
       carNumber: undefined,
       showCarNumber: false,
-      disabled: false
+      disabled: false,
+      loading: false
     }
   },
   methods: {
@@ -65,9 +66,11 @@ export default {
       const params = new FormData()
       params.append('file', file.file)
       this.disabled = true
+      this.loading = true
       uploadCarNumber(params).then(res => {
         // console.log(JSON.stringify(res.data))
         this.disabled = false
+        this.loading = false
         if (res.data.code === 0) {
           this.showCarNumber = true
           this.carNumber = res.data.result.number
