@@ -116,17 +116,19 @@ export default {
                     } else {
                       this.$store.commit('clearRememberUser')
                     }
-                    const flag = false
-                    if (flag) {
+                    if (res.result.role && res.result.role === '0') {
                       this.$router.push({
                         path: '/index'
                       })
-                    } else {
+                      this.$message.success('登陆成功')
+                    } else if (res.result.role && res.result.role === '1') {
                       this.$router.push({
                         path: '/index/adminOrderIndex'
                       })
+                      this.$message.success('登陆成功')
+                    } else {
+                      this.$message.error('用户权限信息错误')
                     }
-                    this.$message.success('登陆成功')
                   }
                 })
               } else {
