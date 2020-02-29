@@ -14,10 +14,9 @@
               </a-col>
               <a-col :span="8">
                 <a-form-item label="订单状态" :label-col="{ span: 4,offset:1 }" :wrapper-col="{ span: 15 }"   :colon="false">
-                  <a-select v-decorator="['state']" :allowClear="true">
-                    <a-select-option v-for="d in state" :key="d">
-                      <span v-if="d === '0'">待停</span>
-                      <span v-if="d === '1'">在停</span>
+                  <a-select v-decorator="['status']" :allowClear="true">
+                    <a-select-option v-for="d in status" :key="d.key">
+                      <span>{{ d.val }}</span>
                     </a-select-option>
                   </a-select>
                 </a-form-item>
@@ -55,17 +54,20 @@
             <template slot="billTime" slot-scope="billTime">
               {{billTime}} <span v-if="billTime">/h</span><div v-else>-</div>
             </template>
-            <template slot="state" slot-scope="state">
-              <a-badge :status="state === '0'?'warning':'processing'" style="float: left"/>
-              <div v-html="state === '0'?'待停':'在停'"></div>
+            <template slot="status" slot-scope="status">
+              <a-badge :status="status | filterStatusClass" style="float: left"/>
+              <div>{{status | filterStatusVal}}</div>
             </template>
             <template slot="action" slot-scope="record">
               <a-button-group>
-                <a-button type="primary" size="small" style="float: left" @click="ParkingOrder(record.id)">
+                <a-button  v-if="record.status === '0'" type="primary" size="small" style="float: left" @click="ParkingOrder(record.id,'1')">
                   <a-icon type="lock"/>停车
                 </a-button>
-                <a-button type="danger" size="small" style="float: left" @click="NoParking(record)">
+                <a-button  v-if="record.status === '1'" type="danger" size="small" style="float: left" @click="ParkingOrder(record.id, '0')">
                   <a-icon type="unlock"/>待停
+                </a-button>
+                <a-button v-if="record.status === '1'" type="danger" size="small" style="float: left" @click="NoParking(record)">
+                  <a-icon type="strikethrough" />结算
                 </a-button>
               </a-button-group>
             </template>
@@ -83,7 +85,7 @@
 </template>
 
 <script>
-import {getUnFinishedOrder, ParkingOrder} from '@/modular/Order/api/order'
+import {getUnFinishedOrder, ChangOrderStatus} from '@/modular/Order/api/order'
 import enterPasswork from './enterPasswork'
 const columns = [
   {
@@ -124,9 +126,9 @@ const columns = [
   },
   {
     title: '停车状态',
-    dataIndex: 'state',
+    dataIndex: 'status',
     width: '9%',
-    scopedSlots: { customRender: 'state' }
+    scopedSlots: { customRender: 'status' }
   },
   {
     title: '操作',
@@ -134,15 +136,22 @@ const columns = [
     scopedSlots: { customRender: 'action' }
   }
 ]
+// eslint-disable-next-line no-unused-vars
+let that
 export default {
   name: 'adminOrder',
   components: {
     enterPasswork
   },
+  beforeCreate () {
+    that = this
+  },
   data () {
     return {
       form: this.$form.createForm(this),
-      state: ['0', '1'],
+      status: [
+        {key: '0', val: '待停', class: 'warning'}, {key: '1', val: '在停', class: 'processing'}, {key: '2', val: '待支付', class: 'error'}
+      ],
       loading: false,
       columns,
       data: [],
@@ -157,9 +166,20 @@ export default {
   mounted () {
     this.selectSubmit()
   },
+  filters: {
+    filterStatusVal: (key) => {
+      // console.log(JSON.stringify(that.status))
+      const array = that.status.filter(item => item.key === key)
+      return array.length > 0 ? array[0].val : null
+    },
+    filterStatusClass: (key) => {
+      const array = that.status.filter(item => item.key === key)
+      return array.length > 0 ? array[0].class : null
+    }
+  },
   methods: {
     initData () {
-      const param = this.form.getFieldsValue(['user', 'state'])
+      const param = this.form.getFieldsValue(['user', 'status'])
       param.current = this.pagination.current === 0 ? 1 : this.pagination.current
       param.size = this.pagination.size
       getUnFinishedOrder('/order/getUnFinishedOrder', param).then(res => {
@@ -167,7 +187,6 @@ export default {
           this.loading = false
           this.data = []
           res.result.records.forEach(item => {
-            item.state = item.comptime ? '1' : '0'
             if (item.comptime) {
               let nowTime = Date.parse(new Date(item.comptime))// 当前时间的时间戳
               let endTime = Date.parse(new Date())// 指定时间的时间戳
@@ -216,11 +235,15 @@ export default {
       date.setSeconds(second)
       return date
     },
-    ParkingOrder (id) {
-      const param = {id: id, park: '1'}
-      ParkingOrder('/order/ParkingOrder', param).then(res => {
+    ParkingOrder (id, status) {
+      const param = {id: id, status: status}
+      ChangOrderStatus('/order/ChangOrderStatus', param).then(res => {
         if (res.code === 0) {
-          this.$message.success('停车成功')
+          if (status === '1') {
+            this.$message.success('停车成功')
+          } else {
+            this.$message.success('待停成功')
+          }
           this.initData()
         } else {
           this.$message.error(res.msg)

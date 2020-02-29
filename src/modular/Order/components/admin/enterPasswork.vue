@@ -37,7 +37,7 @@
 </template>
 
 <script>
-import { ParkingOrder} from '@/modular/Order/api/order'
+import { ChangOrderStatus} from '@/modular/Order/api/order'
 export default {
   name: 'enterPasswork',
   data () {
@@ -65,10 +65,10 @@ export default {
         if (!err) {
           const pw = this.form.getFieldValue('password')
           if (this.user.password === pw) {
-            const param = {id: this.data.id, park: '0'}
-            ParkingOrder('/order/ParkingOrder', param).then(res => {
+            const param = {id: this.data.id, status: '2'}
+            ChangOrderStatus('/order/ChangOrderStatus', param).then(res => {
               if (res.code === 0) {
-                this.$message.success('停车成功')
+                this.$message.success('订单等待支付中')
                 this.$emit('parkOrderSuccess', true)
                 this.visible = false
               } else {
