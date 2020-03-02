@@ -37,6 +37,7 @@
 </template>
 
 <script>
+// eslint-disable-next-line standard/object-curly-even-spacing
 import { ChangOrderStatus} from '@/modular/Order/api/order'
 export default {
   name: 'enterPasswork',

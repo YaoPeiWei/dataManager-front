@@ -12,7 +12,7 @@
           <order-form v-if="!visible" @close="createCarParking" @insertOrder="insertOrder"></order-form>
         </div>
         <div id="ordering" v-show="hasOrder">
-          <ordering ref="ordering"></ordering>
+          <ordering ref="ordering" @CancelBack="showOrder"></ordering>
         </div>
       </div>
       <div id="order_history">

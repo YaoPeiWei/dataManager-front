@@ -52,11 +52,13 @@
           </a-col>
         </div>
         <template class="ant-card-actions" slot="actions">
-          <a-icon type="setting" />
-          <a-icon type="edit" />
-          <a-icon type="ellipsis" />
+          <span v-if="order.status==='0'" @click="cancelOrder"> <a-icon type="delete" /><span style="margin-left: 8px">取消订单</span></span>
+          <span v-if="order.status==='1'"><a-icon type="strikethrough" /><span style="margin-left: 8px">支付订单</span></span>
         </template>
       </a-card>
+    </a-row>
+    <a-row>
+      <cancel-order ref="cancelOrder" @CancelBack="CancelBack"></cancel-order>
     </a-row>
   </div>
 </template>
@@ -65,6 +67,7 @@
 import {getLoginUserUnFinishedOrder} from '../../api/order'
 import {getCarParkByID} from '../../api/carPark'
 import Timer from '../common/Timer'
+import cancelOrder from './cancelOrder'
 let that
 export default {
   name: 'ordering',
@@ -74,6 +77,7 @@ export default {
   data () {
     return {
       order: {
+        id: undefined,
         comptime: undefined,
         appointmentTime: undefined,
         dprice: undefined,
@@ -95,7 +99,8 @@ export default {
     }
   },
   components: {
-    Timer
+    Timer,
+    cancelOrder
   },
   filters: {
     filterStatusVal: (key) => {
@@ -108,31 +113,35 @@ export default {
       let flag = false
       await getLoginUserUnFinishedOrder('/order/getLoginUserUnFinishedOrder').then(res => {
         if (res.code === 0) {
-          if (res.result.status === '3') {
-            return false
-          }
-          flag = true
-          // console.log(res.result)
-          this.order.dprice = res.result.dprice
-          this.order.carNumber = res.result.carNumber
-          this.order.appointmentTime = res.result.appointmentTime
-          this.order.comptime = res.result.comptime
-          this.order.createTime = res.result.createTime
-          this.order.status = res.result.status
-          // 设置时间 ==> 状态为在停时显示
-          if (res.result.status === '1' && res.result.comptime) {
-            this.showTimer(this.order.comptime)
-          }
-          if (res.result.status === '0') {
-            this.$refs.timer.NotimeCreated()
-          }
-          this.hasOrder = true
-          // this.computePrice()
-          getCarParkByID('/carPark/getCarParkByID', {id: res.result.carparkId}).then(res => {
-            if (res.code === 0) {
-              this.carPark = res.result
+          // console.log(res)
+          if (res.result) {
+            if (res.result && res.result.status === '3') {
+              return false
             }
-          })
+            flag = true
+            // console.log(res.result)
+            this.order.id = res.result.id
+            this.order.dprice = res.result.dprice
+            this.order.carNumber = res.result.carNumber
+            this.order.appointmentTime = res.result.appointmentTime
+            this.order.comptime = res.result.comptime
+            this.order.createTime = res.result.createTime
+            this.order.status = res.result.status
+            // 设置时间 ==> 状态为在停时显示
+            if (res.result && res.result.status === '1' && res.result.comptime) {
+              this.showTimer(this.order.comptime)
+            }
+            if (res.result && res.result.status === '0') {
+              this.$refs.timer.NotimeCreated()
+            }
+            this.hasOrder = true
+            // this.computePrice()
+            getCarParkByID('/carPark/getCarParkByID', {id: res.result.carparkId}).then(res => {
+              if (res.code === 0) {
+                this.carPark = res.result
+              }
+            })
+          }
         } else {
           this.$message.error(res.msg)
         }
@@ -183,6 +192,12 @@ export default {
       let days = Math.floor(timeDis / (24 * 3600 * 1000))
       const ctime = this.computeTime(time)
       this.$refs.timer.created(ctime, days)
+    },
+    cancelOrder () {
+      this.$refs.cancelOrder.showModal(this.order)
+    },
+    CancelBack () {
+      this.$emit('CancelBack')
     }
   }
 }
