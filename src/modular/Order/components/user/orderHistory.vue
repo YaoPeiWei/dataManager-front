@@ -38,6 +38,16 @@
           <description title="结束时间" :content="order.finishTime" />
         </a-col>
       </a-row>
+      <a-row>
+        <a-col :span="12">
+          <description title="订单状态" :content="order.isFail | filterStatusVal" />
+        </a-col>
+      </a-row>
+      <a-row v-if="order.isFail === '0'">
+        <a-col :span="24">
+          <description title="取消原因" :content="order.failResource" />
+        </a-col>
+      </a-row>
       <a-divider>With Text</a-divider>
       <p class="pStyle">车位信息</p>
       <a-row>
@@ -66,6 +76,7 @@
 import {getCarParkByID} from '../../api/carPark'
 import {getLoginUserOrders} from '../../api/order'
 import description from '../../../Index/components/description'
+let that
 export default {
   name: 'orderHistory',
   components: {
@@ -76,11 +87,24 @@ export default {
       visible: false,
       data: [],
       order: {},
-      carPark: {}
+      carPark: {},
+      status: [
+        {key: '0', val: '失败'}, {key: '1', val: '成功'}
+      ]
     }
+  },
+  beforeCreate () {
+    that = this
   },
   mounted () {
     this.initData()
+  },
+  filters: {
+    filterStatusVal: (key) => {
+      // console.log(JSON.stringify(that.status))
+      const array = that.status.filter(item => item.key === key)
+      return array.length > 0 ? array[0].val : null
+    }
   },
   methods: {
     initData () {

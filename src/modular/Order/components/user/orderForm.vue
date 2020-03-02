@@ -22,14 +22,13 @@
           <a-date-picker
             v-decorator="['parkTime', config]"
             show-time
-            format="YYYY-MM-DD HH:mm:ss"
           />
         </a-form-item>
         <a-form-item
           :wrapper-col="{
-        xs: { span: 3, offset: 21 },
-        sm: { span: 3, offset: 21 },
-      }"
+            xs: { span: 3, offset: 21 },
+            sm: { span: 3, offset: 21 },
+          }"
         >
           <a-button type="primary" @click="handleSubmit">
             Submit
@@ -44,6 +43,7 @@
 </template>
 
 <script>
+import moment from 'moment'
 import carParking from './carParking'
 import {inserOrder} from '../../api/order'
 
@@ -81,7 +81,8 @@ export default {
         carNumber: undefined,
         price: undefined,
         location: undefined
-      }
+      },
+      dateFormat: 'yyyy-MM-dd HH:mm:ss'
     }
   },
   methods: {
@@ -133,12 +134,12 @@ export default {
     handleSubmit () {
       this.form.validateFields((err, values) => {
         if (!err) {
-          console.log(values)
+          // console.log(values)
           const param = {
             carparkId: this.carPark.id,
             dprice: values.price,
             carNumber: values.carNumber,
-            appointmentTime: values.parkTime
+            appointmentTime: this.format(values.parkTime,'yyyy-MM-dd HH:mm:ss')
           }
           inserOrder('/order/insert/addOrder', param).then(res => {
             if (res.code === 0) {
@@ -149,6 +150,39 @@ export default {
               this.$emit('finishSelect')
             }
           })
+        }
+      })
+    },
+    // 转换时间格式为yyyy-MM-dd
+    format (time, format) {
+      var t = new Date(time)
+      var tf = function (i) { return (i < 10 ? '0' : '') + i }
+      return format.replace(/yyyy|MM|dd|HH|mm|ss/g, function (a) {
+        switch (a) {
+          case 'yyyy':
+            return tf(t.getFullYear())
+            // eslint-disable-next-line no-unreachable
+            break
+          case 'MM':
+            return tf(t.getMonth() + 1)
+            // eslint-disable-next-line no-unreachable
+            break
+          case 'mm':
+            return tf(t.getMinutes())
+            // eslint-disable-next-line no-unreachable
+            break
+          case 'dd':
+            return tf(t.getDate())
+            // eslint-disable-next-line no-unreachable
+            break
+          case 'HH':
+            return tf(t.getHours())
+            // eslint-disable-next-line no-unreachable
+            break
+          case 'ss':
+            return tf(t.getSeconds())
+            // eslint-disable-next-line no-unreachable
+            break
         }
       })
     }
