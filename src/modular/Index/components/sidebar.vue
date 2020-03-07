@@ -12,42 +12,12 @@
         </div>
       </div>
       <a-menu theme="dark" mode="inline" :defaultSelectedKeys="selectKeys" class="menu">
-        <a-menu-item key="adminOrderIndex">
-          <a-icon type="video-camera" />
-          <span class="nav-text">订单</span>
-        </a-menu-item>
-        <a-menu-item key="order">
-          <a-icon type="bar-chart" />
-          <span class="nav-text">Order</span>
-        </a-menu-item>
-        <a-menu-item key="2">
-          <a-icon type="" />
-          <span class="nav-text">nav 2</span>
-        </a-menu-item>
-        <a-menu-item key="3">
-          <a-icon type="upload" />
-          <span class="nav-text">nav 3</span>
-        </a-menu-item>
-        <a-menu-item key="4">
-          <a-icon type="user" />
-          <span class="nav-text">nav 4</span>
-        </a-menu-item>
-        <a-menu-item key="5">
-          <a-icon type="cloud-o" />
-          <span class="nav-text">nav 5</span>
-        </a-menu-item>
-        <a-menu-item key="6">
-          <a-icon type="appstore-o" />
-          <span class="nav-text">nav 6</span>
-        </a-menu-item>
-        <a-menu-item key="7">
-          <a-icon type="team" />
-          <span class="nav-text">nav 7</span>
-        </a-menu-item>
-        <a-menu-item key="8">
-          <a-icon type="shop" />
-          <span class="nav-text">nav 8</span>
-        </a-menu-item>
+        <template v-for="item in menu">
+          <a-menu-item v-if="item.role === user.role" :key="item.key">
+            <a-icon :type="item.icon" />
+            <span>{{item.title}}</span>
+          </a-menu-item>
+        </template>
       </a-menu>
       <div class="sidebarFooter">
         <div class="edit" @click="edit">
@@ -79,15 +49,18 @@
 import {logout} from '../api/sidebar'
 import {delCookie} from '../../../cookie'
 import Edit from '../../Login/components/Edit'
+import menu from '../assets/menu'
 export default {
   name: 'sidebar',
   data () {
     return {
+      menu: [],
       selectKeys: [],
       touxiang: undefined,
       flag: false,
       user: {
-        username: undefined
+        username: undefined,
+        role: undefined
       },
       over: false,
       lover: false
@@ -108,7 +81,10 @@ export default {
   mounted () {
     this.initSelectKeys()
     this.loadTouXiang()
-    this.user = this.$store.getters.getLoginUser
+    this.user = JSON.parse(sessionStorage.getItem('LoginUser'))
+    // console.log(JSON.stringify(menu))
+    // console.log(JSON.stringify(this.user))
+    this.menu = menu
   },
   methods: {
     initSelectKeys () {
@@ -116,7 +92,7 @@ export default {
       this.selectKeys.push(this.$route.path.split('/')[2].toString())
     },
     loadTouXiang () {
-      const user = this.$store.getters.getLoginUser
+      const user = JSON.parse(sessionStorage.getItem('LoginUser'))
       if (user) {
         this.touxiang = 'http://localhost:8080/api/attach/getAttachByUid?uid=' + user.id
       }
