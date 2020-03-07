@@ -11,7 +11,7 @@
           </div>
         </div>
       </div>
-      <a-menu theme="dark" mode="inline" :defaultSelectedKeys="selectKeys" class="menu">
+      <a-menu theme="dark" mode="inline" :defaultSelectedKeys="selectKeys" class="menu" @select="selectMenu">
         <template v-for="item in menu">
           <a-menu-item v-if="item.role === user.role" :key="item.key">
             <a-icon :type="item.icon" />
@@ -124,6 +124,12 @@ export default {
     },
     edit () {
       this.$refs.Edit.showDrawer()
+    },
+    selectMenu (val) {
+      this.$router.push({
+        path: '/index/' + val.selectedKeys[0]
+      })
+      // console.log(val)
     }
   }
 }

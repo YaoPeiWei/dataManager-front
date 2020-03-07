@@ -38,6 +38,11 @@ const routes = [
         path: 'adminOrderIndex',
         name: 'adminOrderIndex',
         component: () => import('./modular/Order/components/admin/adminOrderIndex')
+      },
+      {
+        path: 'adminCarPark',
+        name: 'adminCarPark',
+        component: () => import('./modular/CarPark/components/CarParkIndex')
       }
     ]
   }
