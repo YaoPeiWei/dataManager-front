@@ -12,11 +12,11 @@
           <order-form v-if="!visible" @close="createCarParking" @insertOrder="insertOrder"></order-form>
         </div>
         <div id="ordering" v-show="hasOrder">
-          <ordering ref="ordering" @CancelBack="showOrder"></ordering>
+          <ordering ref="ordering" @CancelBack="cancelBack"></ordering>
         </div>
       </div>
       <div id="order_history">
-        <order-history></order-history>
+        <order-history ref="orderHistory"></order-history>
       </div>
     </div>
 </template>
@@ -42,6 +42,10 @@ export default {
     this.showOrder()
   },
   methods: {
+    cancelBack () {
+      this.hasOrder = false
+      this.createCarParking()
+    },
     showOrder () {
       this.$refs.ordering.initData().then(res => {
         this.hasOrder = res
@@ -52,6 +56,7 @@ export default {
     },
     insertOrder () {
       this.showOrder()
+      this.$refs.orderHistory.initData()
       this.openNotification()
     },
     openNotification () {

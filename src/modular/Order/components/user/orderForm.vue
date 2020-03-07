@@ -1,6 +1,6 @@
 <template>
   <div>
-    <a-card title="CarParking Order">
+    <a-card title="预约停车车位">
       <a href="#" slot="extra" @click="close">close</a>
       <div @click="showCarParking">
         <a-progress type="circle" :percent="percent" :format="() => tip"/>

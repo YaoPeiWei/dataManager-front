@@ -120,7 +120,11 @@ export default {
     showDrawer (data) {
       this.visible = true
       this.order = data
-      getCarParkByID('/carPark/getCarParkByID', {id: data.carparkId}).then(res => {
+      // console.log(data.carparkId.toString())
+      const param = {
+        id: data.carparkId.toString()
+      }
+      getCarParkByID('/carPark/getCarParkByID', param).then(res => {
         // console.log(res)
         if (res.code === 0) {
           this.carPark = {}

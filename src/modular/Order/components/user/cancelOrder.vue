@@ -1,7 +1,7 @@
 <template>
     <a-modal
             :bodyStyle="{padding: '16px'}"
-            title="待停"
+            title="取消车位预约"
             :width="500"
             :visible="visible"
             @ok="handleOk"
@@ -67,6 +67,7 @@ export default {
       // console.log(param)
       CancelOrder('/order/CancelOrder', param).then(res => {
         if (res.code === 0) {
+          this.visible = false
           this.$emit('CancelBack')
         } else {
           this.$message.error(res.msg)
