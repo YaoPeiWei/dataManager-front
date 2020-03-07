@@ -1,4 +1,4 @@
-import {post, fetch} from '../../../http'
+import {post} from '../../../http'
 
-export const getCarPark = (url, param) => post(url, param)
-export const getCarParkByID = (url, param) => fetch(url, param)
+export const SelectCarPark = (url, param) => post(url, param)
+export const saveOrUpdate = (url, param) => post(url, param)

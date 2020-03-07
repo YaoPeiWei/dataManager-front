@@ -6,7 +6,7 @@
                 :tabList="tabList"
                 :activeTabKey="key"
         >
-            <span slot="carPark" slot-scope="item"> <a-icon type="home" />{{item.name}} </span>
+            <span slot="carPark" slot-scope="item"> <a-icon type="car" />{{item.name}} </span>
             <a href="#" slot="extra">More</a>
             <div class="carPark">
                 <carPark></carPark>
