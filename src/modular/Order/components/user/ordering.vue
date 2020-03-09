@@ -1,7 +1,7 @@
 <template>
   <div style="background: white; padding: 30px;text-align: left">
     <a-row :gutter="16">
-      <a-card title="进行中的订单" style="width:100%">
+      <a-card v-show="!paying" title="进行中的订单" style="width:100%">
         <div>
           <a-col :span="12">
             <a-card>
@@ -53,9 +53,10 @@
         </div>
         <template class="ant-card-actions" slot="actions">
           <span v-if="order.status==='0'" @click="cancelOrder"> <a-icon type="delete" /><span style="margin-left: 8px">取消订单</span></span>
-          <span v-if="order.status==='1'"><a-icon type="strikethrough" /><span style="margin-left: 8px">支付订单</span></span>
+          <span v-if="order.status==='1'" @click="pay"><a-icon type="strikethrough" /><span style="margin-left: 8px">支付订单</span></span>
         </template>
       </a-card>
+      <div v-html="content" ref="alipayWap"></div>
     </a-row>
     <a-row>
       <cancel-order ref="cancelOrder" @CancelBack="CancelBack"></cancel-order>
@@ -64,7 +65,7 @@
 </template>
 
 <script>
-import {getLoginUserUnFinishedOrder} from '../../api/order'
+import {getLoginUserUnFinishedOrder, payOrder} from '../../api/order'
 import {getCarParkByID} from '../../api/carPark'
 import Timer from '../common/Timer'
 import cancelOrder from './cancelOrder'
@@ -95,6 +96,8 @@ export default {
       status: [
         {key: '0', val: '待停', class: 'warning'}, {key: '1', val: '在停', class: 'processing'}, {key: '2', val: '待支付', class: 'error'}
       ],
+      paying: false, // 是否正在支付
+      content: undefined, // 支付宝沙箱页面
       hasOrder: false // 控制是否开始计数
     }
   },
@@ -198,6 +201,23 @@ export default {
     },
     CancelBack () {
       this.$emit('CancelBack')
+    },
+    pay () {
+      payOrder('/pay/payOrder', {id: this.order.id}).then(res => {
+        this.paying = true
+        this.content = res
+        // console.log(this.content)
+        this.$nextTick(() => {
+          // const div = document.createElement('div')
+          // /* 此处form就是后台返回接收到的数据 */
+          // div.innerHTML = this.content
+          // document.body.appendChild(div)
+          // document.forms[0].acceptCharset = 'utf-8'
+          // document.forms[0].submit()
+          // document.getElementById('alipay_submit').submit()
+          this.$refs.alipayWap.children[0].submit()
+        })
+      })
     }
   }
 }
