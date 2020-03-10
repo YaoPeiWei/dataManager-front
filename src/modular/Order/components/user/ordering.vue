@@ -205,18 +205,26 @@ export default {
     pay () {
       payOrder('/pay/payOrder', {id: this.order.id}).then(res => {
         this.paying = true
-        this.content = res
-        // console.log(this.content)
-        this.$nextTick(() => {
-          // const div = document.createElement('div')
-          // /* 此处form就是后台返回接收到的数据 */
-          // div.innerHTML = this.content
-          // document.body.appendChild(div)
-          // document.forms[0].acceptCharset = 'utf-8'
-          // document.forms[0].submit()
-          // document.getElementById('alipay_submit').submit()
-          this.$refs.alipayWap.children[0].submit()
-        })
+        // console.log(JSON.stringify(res))
+        if (res && res.code === 1000) {
+          this.$message.error(res.msg)
+        } else if (res && res.code === 0) {
+          // console.log(JSON.stringify(res))
+          location.reload()
+        } else {
+          this.content = res
+          // console.log(this.content)
+          this.$nextTick(() => {
+            // const div = document.createElement('div')
+            // /* 此处form就是后台返回接收到的数据 */
+            // div.innerHTML = this.content
+            // document.body.appendChild(div)
+            // document.forms[0].acceptCharset = 'utf-8'
+            // document.forms[0].submit()
+            // document.getElementById('alipay_submit').submit()
+            this.$refs.alipayWap.children[0].submit()
+          })
+        }
       })
     }
   }
