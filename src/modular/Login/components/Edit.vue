@@ -195,6 +195,7 @@ export default {
         if (!err) {
           this.loading = true
           values.id = this.id
+          values.birthdate = this.format(values.birthdate,'yyyy-MM-dd HH:mm:ss')
           register('/user/register', values).then(res => {
             this.loading = false
             if (res.code === 0) {
@@ -211,6 +212,39 @@ export default {
               this.$message.error(res.msg)
             }
           })
+        }
+      })
+    },
+    // 转换时间格式为yyyy-MM-dd
+    format (time, format) {
+      var t = new Date(time)
+      var tf = function (i) { return (i < 10 ? '0' : '') + i }
+      return format.replace(/yyyy|MM|dd|HH|mm|ss/g, function (a) {
+        switch (a) {
+          case 'yyyy':
+            return tf(t.getFullYear())
+            // eslint-disable-next-line no-unreachable
+            break
+          case 'MM':
+            return tf(t.getMonth() + 1)
+            // eslint-disable-next-line no-unreachable
+            break
+          case 'mm':
+            return tf(t.getMinutes())
+            // eslint-disable-next-line no-unreachable
+            break
+          case 'dd':
+            return tf(t.getDate())
+            // eslint-disable-next-line no-unreachable
+            break
+          case 'HH':
+            return tf(t.getHours())
+            // eslint-disable-next-line no-unreachable
+            break
+          case 'ss':
+            return tf(t.getSeconds())
+            // eslint-disable-next-line no-unreachable
+            break
         }
       })
     }
