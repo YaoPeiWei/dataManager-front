@@ -17,6 +17,12 @@ const menu = [
     icon: 'profile',
     title: '订单信息',
     role: '1'
+  },
+  {
+    key: 'adminUser',
+    icon: 'user',
+    title: '用户信息',
+    role: '1'
   }
 ]
 

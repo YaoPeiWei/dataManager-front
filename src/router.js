@@ -43,6 +43,11 @@ const routes = [
         path: 'adminCarPark',
         name: 'adminCarPark',
         component: () => import('./modular/CarPark/components/CarParkIndex')
+      },
+      {
+        path: 'adminUser',
+        name: 'adminUser',
+        component: () => import('./modular/User/components/AdminUserIndex')
       }
     ]
   }
