@@ -7,7 +7,8 @@ const store = new Vuex.Store({
   state: {
     User: 'LoginUsers', // 登陆用户KEY => 具体用户信息存在sessionstore 中
     RememberUser: 'RememberUser', // 记住用户KEY => 具体账号信息存在localstore 中
-    userId: undefined
+    userId: undefined,
+    authorization: undefined
   },
   getters: {
     getLoginUser: state => {
@@ -49,7 +50,8 @@ const store = new Vuex.Store({
       sessionStorage.setItem(state.User, JSON.stringify(userArray))
     },
     setRememberUser: (state, user) => localStorage.setItem(state.RememberUser, JSON.stringify(user)),
-    clearRememberUser: state => localStorage.removeItem(state.RememberUser)
+    clearRememberUser: state => localStorage.removeItem(state.RememberUser),
+    setAuthorization: (state, authorization) => state.authorization = authorization
   },
   // action => 可以存放一些异步的方法， 比如向后台提交数据...... this.$store.dispatch('action方法名', 值)
   actions: {
