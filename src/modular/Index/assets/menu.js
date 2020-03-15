@@ -35,6 +35,12 @@ const menu = [
     icon: 'profile',
     title: '订单信息',
     role: '2'
+  },
+  {
+    key: 'adminCommunity',
+    icon: 'hdd',
+    title: '小区信息',
+    role: '2'
   }
 ]
 

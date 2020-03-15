@@ -48,6 +48,11 @@ const routes = [
         path: 'adminUser',
         name: 'adminUser',
         component: () => import('./modular/User/components/AdminUserIndex')
+      },
+      {
+        path: 'adminCommunity',
+        name: 'adminCommunity',
+        component: () => import('./modular/Community/components/CommunityIndex')
       }
     ]
   }
