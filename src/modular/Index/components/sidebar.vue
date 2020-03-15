@@ -79,22 +79,28 @@ export default {
     }
   },
   mounted () {
-    this.initSelectKeys()
-    this.loadTouXiang()
-    this.user = JSON.parse(sessionStorage.getItem('LoginUser'))
-    // console.log(JSON.stringify(menu))
-    // console.log(JSON.stringify(this.user))
-    this.menu = menu
+    this.initData()
   },
   methods: {
+    async initData () {
+      this.user = await this.$store.getters.getLoginUser
+      this.initSelectKeys()
+      this.loadTouXiang()
+      // console.log(JSON.stringify(menu))
+      // console.log(JSON.stringify(this.user))
+      // console.log(menu.filter(item => item.role === this.user.role))
+      // console.log(this.$store.getters)
+      // console.log(this.$store)
+      this.menu = menu.filter(item => item.role === this.user.role)
+    },
     initSelectKeys () {
       // console.log(this.$route.path.split('/'))
       this.selectKeys.push(this.$route.path.split('/')[2].toString())
     },
-    loadTouXiang () {
-      const user = JSON.parse(sessionStorage.getItem('LoginUser'))
-      if (user) {
-        this.touxiang = 'http://localhost:8080/api/attach/getAttachByUid?uid=' + user.id
+    async loadTouXiang () {
+      // console.log(this.$store.state.userId)
+      if (this.$store.state.userId) {
+        this.touxiang = 'http://localhost:8080/api/attach/getAttachByUid?uid=' + this.$store.state.userId
       }
     },
     changEditColor () {

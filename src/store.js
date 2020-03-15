@@ -5,13 +5,18 @@ Vue.use(Vuex)
 
 const store = new Vuex.Store({
   state: {
-    User: 'LoginUser', // 登陆用户KEY => 具体用户信息存在sessionstore 中
-    RememberUser: 'RememberUser' // 记住用户KEY => 具体账号信息存在localstore 中
+    User: 'LoginUsers', // 登陆用户KEY => 具体用户信息存在sessionstore 中
+    RememberUser: 'RememberUser', // 记住用户KEY => 具体账号信息存在localstore 中
+    userId: undefined
   },
   getters: {
     getLoginUser: state => {
-      const user = JSON.parse(sessionStorage.getItem(state.User))
-      return user
+      const loginUserArray = JSON.parse(sessionStorage.getItem(state.User))
+      if (loginUserArray) {
+        const user = loginUserArray.filter(item => item.id === state.userId)
+        return user[0]
+      }
+      return null
     },
     getRememberUser: state => {
       const RememberMe = JSON.parse(localStorage.getItem(state.RememberUser))
@@ -20,8 +25,29 @@ const store = new Vuex.Store({
   },
   // mutations => 一般是同步操作, this.$store.commit('mutations方法名', 值)
   mutations: {
-    setLoginUser: (state, user) => sessionStorage.setItem(state.User, JSON.stringify(user)),
-    clearLoginUser: state => sessionStorage.removeItem(state.User),
+    setLoginUser: (state, user) => {
+      let userArray = []
+      userArray = JSON.parse(sessionStorage.getItem(state.User))
+      let a = []
+      if (userArray) {
+        a = userArray.map(item => item)
+      } else {
+        a = []
+      }
+      if (a.filter(item => item.id === user.id).length <= 0) {
+        a.push(user)
+        state.userId = user.id
+      }
+      sessionStorage.setItem(state.User, JSON.stringify(a))
+    },
+    clearLoginUser: state => {
+      const loginUserArray = JSON.parse(sessionStorage.getItem(state.User))
+      let userArray = []
+      if (loginUserArray) {
+        userArray = loginUserArray.filter(item => item.id !== state.userId)
+      }
+      sessionStorage.setItem(state.User, JSON.stringify(userArray))
+    },
     setRememberUser: (state, user) => localStorage.setItem(state.RememberUser, JSON.stringify(user)),
     clearRememberUser: state => localStorage.removeItem(state.RememberUser)
   },
