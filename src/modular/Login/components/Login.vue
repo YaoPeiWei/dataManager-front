@@ -121,7 +121,7 @@ export default {
                         path: '/index'
                       })
                       this.$message.success('登陆成功')
-                    } else if (res.result.role && res.result.role === '1') {
+                    } else if (res.result.role && (res.result.role === '1' || res.result.role === '2')) {
                       this.$router.push({
                         path: '/index/adminOrderIndex'
                       })
