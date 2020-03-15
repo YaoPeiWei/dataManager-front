@@ -133,6 +133,7 @@
 import moment from 'moment'
 import CarNumberUploadComp from './CarNumberUploadComp'
 import {getLoginUser, register} from '../api/login'
+import {getUserById} from '../../User/api/user'
 export default {
   name: 'Edit',
   components: {
@@ -149,22 +150,25 @@ export default {
     }
   },
   methods: {
-    showDrawer () {
+    async showDrawer () {
       this.visible = true
-      const user = JSON.parse(sessionStorage.getItem('LoginUser'))
-      setTimeout(() => {
-        this.form.setFieldsValue({
-          uname: user.uname,
-          password: user.password,
-          username: user.username,
-          phone: user.phone,
-          mail: user.mail,
-          birthdate: moment(new Date(user.birthdate).toLocaleDateString(), this.dateFormat),
-          carNumber: user.carNumber
-        })
-        this.id = user.id
-        this.$refs.CarNumberUploadComp.setCarNumber(user.carNumber)
-      }, 0)
+      const id = this.$store.state.userId
+      getUserById('/user/getUserById', {id: id}).then(res => {
+        const user = res.result
+        setTimeout(() => {
+          this.form.setFieldsValue({
+            uname: user.uname,
+            password: user.password,
+            username: user.username,
+            phone: user.phone,
+            mail: user.mail,
+            birthdate: moment(new Date(user.birthdate).toLocaleDateString(), this.dateFormat),
+            carNumber: user.carNumber
+          })
+          this.id = user.id
+          this.$refs.CarNumberUploadComp.setCarNumber(user.carNumber)
+        }, 0)
+      })
     },
     onClose () {
       setTimeout(() => {
@@ -195,7 +199,7 @@ export default {
         if (!err) {
           this.loading = true
           values.id = this.id
-          values.birthdate = this.format(values.birthdate,'yyyy-MM-dd HH:mm:ss')
+          values.birthdate = this.format(values.birthdate, 'yyyy-MM-dd HH:mm:ss')
           register('/user/register', values).then(res => {
             this.loading = false
             if (res.code === 0) {
