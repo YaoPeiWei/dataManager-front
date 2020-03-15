@@ -51,7 +51,7 @@
                         </a-form-item>
                     </a-col>
                     <a-col :span="22" :offset="2">
-                        <a-form-item label="单价"
+                        <a-form-item label="小区位置"
                                      :label-col="{ span: 5 }"
                                      :wrapper-col="{ span: 17 }">
                             <a-textarea
