@@ -34,13 +34,16 @@
             <template slot="location" slot-scope="communityName">
               {{communityName}}
             </template>
-            <template slot="region" slot-scope="location">
+            <template slot="location" slot-scope="location">
               {{location}}
             </template>
-            <template slot="width" slot-scope="longitude">
+            <template slot="region" slot-scope="region">
+              {{region?region:'-'}}
+            </template>
+            <template slot="longitude" slot-scope="longitude">
               {{longitude}}
             </template>
-            <template slot="length" slot-scope="latitude">
+            <template slot="latitude" slot-scope="latitude">
               {{latitude}}
             </template>
             <template slot="action" slot-scope="record">
@@ -75,8 +78,14 @@ const columns = [
   {
     title: '小区位置',
     dataIndex: 'location',
-    width: '40%',
+    width: '20%',
     scopedSlots: { customRender: 'location' }
+  },
+  {
+    title: '小区车位区域',
+    dataIndex: 'region',
+    width: '20%',
+    scopedSlots: { customRender: 'region' }
   },
   {
     title: '经度',
