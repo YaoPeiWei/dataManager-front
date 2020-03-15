@@ -6,6 +6,13 @@
           <a-form-item>
             <a-row>
               <a-col :span="8">
+                <a-form-item label="小区名" :label-col="{ span: 5 }" :wrapper-col="{ span: 15 }"   :colon="false">
+                  <a-select v-decorator="['communityId']" :allowClear="true">
+                    <a-select-option v-for="d in community" :key="d.id">{{ d.communityName }}</a-select-option>
+                  </a-select>
+                </a-form-item>
+              </a-col>
+              <a-col :span="8">
                 <a-form-item label="区域" :label-col="{ span: 5 }" :wrapper-col="{ span: 15 }"   :colon="false">
                   <a-select v-decorator="['region']" :allowClear="true">
                     <a-select-option v-for="d in region" :key="d">{{ d}}</a-select-option>
@@ -28,8 +35,6 @@
                   </a-select>
                 </a-form-item>
               </a-col>
-            </a-row>
-            <a-row>
               <a-col :span="5" :offset="0">
                 <a-button type="primary" @click="selectData">查询</a-button>
               </a-col>
@@ -93,6 +98,7 @@
 
 <script>
 import {SelectCarPark} from '../api/carPark'
+import {ListCommunity} from '../../Community/api/community'
 import carParkForm from './carParkForm'
 const columns = [
   {
@@ -151,7 +157,8 @@ export default {
   data () {
     return {
       form: this.$form.createForm(this),
-      region: ['A', 'B', 'C', 'D', 'E'], // 区域
+      community: [], // 小区
+      region: [], // 区域
       loading: false,
       columns,
       data: [],
@@ -165,14 +172,20 @@ export default {
   },
   mounted () {
     this.initData()
+    this.initCommunity()
   },
   methods: {
-    selectData() {
+    initCommunity () {
+      ListCommunity('/community/ListCommunity').then(res => {
+        this.community = res.result
+      })
+    },
+    selectData () {
       this.pagination.current = 1
       this.initData()
     },
     initData () {
-      const param = this.form.getFieldsValue(['region', 'isRoom', 'isParking'])
+      const param = this.form.getFieldsValue(['region', 'isRoom', 'isParking', 'communityId'])
       param.current = this.pagination.current === 0 ? 1 : this.pagination.current
       param.size = this.pagination.size
       this.loading = true
