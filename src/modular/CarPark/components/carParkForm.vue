@@ -8,6 +8,17 @@
                  :confirmLoading="confirmLoading"
                  @cancel="handleCancel">
             <a-form :form="form" layout="vertical">
+                <a-row :gutter="24" v-if="user.role === '2'">
+                    <a-col :span="22" :offset="2">
+                        <a-form-item label="所属小区" :label-col="{ span: 5 }" :wrapper-col="{ span: 17 }" :colon="false">
+                            <a-select v-decorator="['communityId',  {
+                                    rules: [{ required: true, message: '请选择车位所属小区' }]
+                                }]" placeholder="请选择车位所属小区" :allowClear="true" @change="selectCommunityId">
+                                <a-select-option v-for="d in community" :key="d.id">{{ d.communityName}}</a-select-option>
+                            </a-select>
+                        </a-form-item>
+                    </a-col>
+                </a-row>
                 <a-row :gutter="24">
                     <a-col :span="22" :offset="2">
                         <a-form-item label="区域" :label-col="{ span: 5 }" :wrapper-col="{ span: 17 }" :colon="false">
@@ -98,21 +109,44 @@
 
 <script>
 import {saveOrUpdate} from '../api/carPark'
+import {ListCommunity, getRegionByCommunityId} from '../../Community/api/community'
 export default {
   name: 'carParkForm',
   data () {
     return {
       form: this.$form.createForm(this),
-      region: ['A', 'B', 'C', 'D', 'E'], // 区域
+      region: [], // 区域
       confirmLoading: false,
       visible: false,
       title: '新增车位',
-      id: undefined
+      id: undefined,
+      user: {
+        role: undefined
+      },
+      community: []
     }
   },
   methods: {
-    showModal (data) {
+    initCommunity () {
+      ListCommunity('/community/ListCommunity').then(res => {
+        this.community = res.result
+        // console.log(this.community)
+      })
+    },
+    async showModal (data) {
       // console.log(JSON.stringify(data))
+      this.user = await this.$store.getters.getLoginUser
+      if (this.user.role !== '2') {
+        this.selectCommunityId(this.user.communityId)
+      } else {
+        this.initCommunity()
+        if (data) {
+          setTimeout(() => {
+            this.form.setFieldsValue({communityId: data.communityId})
+            this.selectCommunityId(data.communityId)
+          }, 200)
+        }
+      }
       if (data) {
         this.title = '编辑车位'
         this.id = data.id
@@ -131,9 +165,13 @@ export default {
     },
     handleOk () {
       this.form.validateFields((err, values) => {
+        // console.log(JSON.stringify(values))
         if (!err) {
           const param = Object.assign({}, values, {id: this.id})
           this.confirmLoading = true
+          if (this.user.role !== '2') {
+            param.communityId = this.user.communityId
+          }
           // console.log(JSON.stringify(param))
           saveOrUpdate('/carPark/saveOrUpdate', param).then(res => {
             // console.log(JSON.stringify(res))
@@ -156,6 +194,9 @@ export default {
       })
     },
     handleCancel () {
+      if (this.user.role === '2') {
+        this.form.setFieldsValue({communityId: undefined})
+      }
       setTimeout(() => {
         this.form.setFieldsValue({
           location: undefined,
@@ -170,6 +211,16 @@ export default {
       }, 0)
       this.confirmLoading = false
       this.visible = false
+    },
+    selectCommunityId (data) {
+      // console.log(data)
+      if (data) {
+        getRegionByCommunityId('/community/getRegionByCommunityId', {id: data}).then(res => {
+          this.region = res.result
+        })
+      } else {
+        this.region = []
+      }
     }
   }
 }

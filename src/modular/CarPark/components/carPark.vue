@@ -5,7 +5,7 @@
         <a-form :form="form">
           <a-form-item>
             <a-row>
-              <a-col :span="8">
+              <a-col :span="8" v-if="user.role === '2'">
                 <a-form-item label="小区名" :label-col="{ span: 5 }" :wrapper-col="{ span: 15 }"   :colon="false">
                   <a-select v-decorator="['communityId']" :allowClear="true" @select="selectCommunityId">
                     <a-select-option v-for="d in community" :key="d.id">{{ d.communityName }}</a-select-option>
@@ -102,10 +102,17 @@ import {ListCommunity, getRegionByCommunityId} from '../../Community/api/communi
 import carParkForm from './carParkForm'
 const columns = [
   {
+    title: '所属小区',
+    dataIndex: 'communityName',
+    sorter: true,
+    width: '12%',
+    scopedSlots: { customRender: 'communityName' }
+  },
+  {
     title: '车位位置',
     dataIndex: 'location',
     sorter: true,
-    width: '20%',
+    width: '15%',
     scopedSlots: { customRender: 'location' }
   },
   {
@@ -116,19 +123,19 @@ const columns = [
   {
     title: '宽度',
     dataIndex: 'width',
-    width: '12.5%',
+    width: '10%',
     scopedSlots: { customRender: 'width' }
   },
   {
     title: '长度',
     dataIndex: 'length',
-    width: '12.5%',
+    width: '10%',
     scopedSlots: { customRender: 'length' }
   },
   {
     title: '单价',
     dataIndex: 'price',
-    width: '10%',
+    width: '8%',
     scopedSlots: { customRender: 'price' }
   },
   {
@@ -167,6 +174,9 @@ export default {
         size: 5,
         pages: 0,
         total: 0
+      },
+      user: {
+        role: undefined
       }
     }
   },
@@ -184,7 +194,11 @@ export default {
       this.pagination.current = 1
       this.initData()
     },
-    initData () {
+    async initData () {
+      this.user = await this.$store.getters.getLoginUser
+      if (this.user !== '2') {
+        this.selectCommunityId(this.user.communityId)
+      }
       const param = this.form.getFieldsValue(['region', 'isRoom', 'isParking', 'communityId'])
       param.current = this.pagination.current === 0 ? 1 : this.pagination.current
       param.size = this.pagination.size
