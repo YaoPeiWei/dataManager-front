@@ -7,7 +7,7 @@
             <a-row>
               <a-col :span="8">
                 <a-form-item label="小区名" :label-col="{ span: 5 }" :wrapper-col="{ span: 15 }"   :colon="false">
-                  <a-select v-decorator="['communityId']" :allowClear="true">
+                  <a-select v-decorator="['communityId']" :allowClear="true" @select="selectCommunityId">
                     <a-select-option v-for="d in community" :key="d.id">{{ d.communityName }}</a-select-option>
                   </a-select>
                 </a-form-item>
@@ -98,7 +98,7 @@
 
 <script>
 import {SelectCarPark} from '../api/carPark'
-import {ListCommunity} from '../../Community/api/community'
+import {ListCommunity, getRegionByCommunityId} from '../../Community/api/community'
 import carParkForm from './carParkForm'
 const columns = [
   {
@@ -213,6 +213,14 @@ export default {
     },
     Edit (data) {
       this.$refs.carParkForm.showModal(data)
+    },
+    selectCommunityId (data) {
+      // console.log(data)
+      if (data) {
+        getRegionByCommunityId('/community/getRegionByCommunityId', {id: data}).then(res => {
+          this.region = res.result
+        })
+      }
     }
   }
 }
