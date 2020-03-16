@@ -18,7 +18,8 @@ if (process.env.NODE_ENV === 'development') {
 http.interceptors.request.use(
   config => {
     // const token = getCookie('authorization')
-    const token = store.state.authorization
+    const token = sessionStorage.getItem(store.state.authorization)
+    // console.log('token: ' + token)
     config.data = JSON.stringify(config.data)
     config.headers = {
       'Content-Type': 'application/json;charset=UTF-8',

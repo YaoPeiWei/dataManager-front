@@ -152,7 +152,7 @@ export default {
   methods: {
     async showDrawer () {
       this.visible = true
-      const id = this.$store.state.userId
+      const id = this.$store.getters.getUserId
       getUserById('/user/getUserById', {id: id}).then(res => {
         const user = res.result
         setTimeout(() => {

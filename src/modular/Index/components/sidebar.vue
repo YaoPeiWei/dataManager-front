@@ -98,9 +98,9 @@ export default {
       this.selectKeys.push(this.$route.path.split('/')[2].toString())
     },
     async loadTouXiang () {
-      // console.log(this.$store.state.userId)
-      if (this.$store.state.userId) {
-        this.touxiang = 'http://localhost:8080/api/attach/getAttachByUid?uid=' + this.$store.state.userId
+      // console.log(this.$store.getters.getUserId)
+      if (this.$store.getters.getUserId) {
+        this.touxiang = 'http://localhost:8080/api/attach/getAttachByUid?uid=' + this.$store.getters.getUserId
       }
     },
     changEditColor () {
