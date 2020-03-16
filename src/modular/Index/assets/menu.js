@@ -7,6 +7,12 @@ const menu = [
     role: '0'
   },
   {
+    key: 'map',
+    icon: 'share-alt',
+    title: '小区地图',
+    role: '0'
+  },
+  {
     key: 'adminCarPark',
     icon: 'car',
     title: '车位信息',
@@ -22,6 +28,12 @@ const menu = [
     key: 'order',
     icon: 'shop',
     title: '用户界面',
+    role: '1'
+  },
+  {
+    key: 'map',
+    icon: 'share-alt',
+    title: '小区地图',
     role: '1'
   },
   {
@@ -52,6 +64,12 @@ const menu = [
     key: 'order',
     icon: 'shop',
     title: '用户界面',
+    role: '2'
+  },
+  {
+    key: 'map',
+    icon: 'share-alt',
+    title: '小区地图',
     role: '2'
   }
 ]
