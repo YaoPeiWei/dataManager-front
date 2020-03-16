@@ -7,7 +7,7 @@
                 :activeTabKey="key"
         >
             <span slot="carPark" slot-scope="item"> <a-icon type="car" />{{item.name}} </span>
-            <a href="#" slot="extra">More</a>
+            <a href="javascript:;" slot="extra" @click="moveUserPage">GO TO USER PAGE  <a-icon type="double-right" /></a>
             <div class="carPark">
                 <carPark></carPark>
             </div>
@@ -33,6 +33,13 @@ export default {
           scopedSlots: { tab: 'carPark' }
         }
       ]
+    }
+  },
+  methods: {
+    moveUserPage () {
+      this.$router.push({
+        path: '/index/order'
+      })
     }
   }
 }

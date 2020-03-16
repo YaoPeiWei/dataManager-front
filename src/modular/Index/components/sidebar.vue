@@ -13,7 +13,7 @@
       </div>
       <a-menu theme="dark" mode="inline" :defaultSelectedKeys="selectKeys" class="menu" @select="selectMenu">
         <template v-for="item in menu">
-          <a-menu-item v-if="item.role === user.role" :key="item.key">
+          <a-menu-item v-if="item.role === user.role" :key="item.key" :id="item.key">
             <a-icon :type="item.icon" />
             <span>{{item.title}}</span>
           </a-menu-item>
@@ -76,6 +76,17 @@ export default {
       } else {
         this.flag = false
       }
+    },
+    $route: {
+      handler: function (val, oldVal) {
+        // console.log(val)
+        const id = this.$route.path.split('/')[2].toString()
+        // console.log(id)
+        // console.log(document.getElementById(id))
+        document.getElementById(id).click()
+      },
+      // 深度观察监听
+      deep: true
     }
   },
   mounted () {
@@ -84,7 +95,6 @@ export default {
   methods: {
     async initData () {
       this.user = await this.$store.getters.getLoginUser
-      this.initSelectKeys()
       this.loadTouXiang()
       // console.log(JSON.stringify(menu))
       // console.log(JSON.stringify(this.user))
@@ -92,6 +102,7 @@ export default {
       // console.log(this.$store.getters)
       // console.log(this.$store)
       this.menu = menu.filter(item => item.role === this.user.role)
+      this.initSelectKeys()
     },
     initSelectKeys () {
       // console.log(this.$route.path.split('/'))

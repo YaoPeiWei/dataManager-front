@@ -9,7 +9,7 @@
     >
       <span slot="unFinishedOrder" slot-scope="item"> <a-icon type="home" />{{item.name}} </span>
       <span slot="HistoryedOrder" slot-scope="item"> <a-icon type="home" />{{item.name}} </span>
-      <a href="#" slot="extra">More</a>
+      <a href="javascript:;" slot="extra" @click="moveUserPage">GO TO USER PAGE  <a-icon type="double-right" /></a>
       <div class="unFinishedOrderTab" v-if="tab === 'unFinishedOrder'">
         <adminOrder></adminOrder>
       </div>
@@ -60,6 +60,11 @@ export default {
       const tab = this.tabList.filter(item => item.key === key)
       this.tab = tab[0].tabId
       this.key = tab[0].key
+    },
+    moveUserPage () {
+      this.$router.push({
+        path: '/index'
+      })
     }
   }
 }

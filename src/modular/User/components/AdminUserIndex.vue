@@ -7,7 +7,7 @@
                 :activeTabKey="key"
         >
             <span slot="adminUserAccount" slot-scope="item"> <a-icon type="team" />{{item.name}} </span>
-            <a href="#" slot="extra">More</a>
+            <a href="javascript:;" slot="extra" @click="moveUserPage">GO TO USER PAGE  <a-icon type="double-right" /></a>
             <div class="adminUserAccount">
                 <AdminUserAccount></AdminUserAccount>
             </div>
@@ -33,6 +33,13 @@ export default {
           scopedSlots: { tab: 'adminUserAccount' }
         }
       ]
+    }
+  },
+  methods: {
+    moveUserPage () {
+      this.$router.push({
+        path: '/index'
+      })
     }
   }
 }

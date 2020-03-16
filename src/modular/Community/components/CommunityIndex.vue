@@ -7,7 +7,7 @@
                 :activeTabKey="key"
         >
             <span slot="community" slot-scope="item"> <a-icon type="hdd" />{{item.name}} </span>
-            <a href="#" slot="extra">More</a>
+            <a href="javascript:;" slot="extra" @click="moveUserPage">GO TO USER PAGE  <a-icon type="double-right" /></a>
             <div class="community">
                 <community></community>
             </div>
@@ -33,6 +33,13 @@ export default {
           scopedSlots: { tab: 'community' }
         }
       ]
+    }
+  },
+  methods: {
+    moveUserPage () {
+      this.$router.push({
+        path: '/index'
+      })
     }
   }
 }
