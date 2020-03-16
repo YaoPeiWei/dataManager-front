@@ -184,7 +184,7 @@ export default {
       date.setHours(hours)
       date.setMinutes(minutes)
       date.setSeconds(second)
-      this.order.price = (days * 24 * this.order.dprice) + (hours * this.order.dprice)
+      this.order.price = (days * 24 * this.order.dprice) + (hours * this.order.dprice) + this.order.dprice
       return date
     },
     showTimer (time) {
