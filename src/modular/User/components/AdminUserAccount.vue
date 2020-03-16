@@ -25,14 +25,22 @@
                     </a-form-item>
                 </a-form>
             </a-row>
+            <a-row>
+                <a-col :span="5" :offset="0">
+                    <a-button type="primary" @click="add">
+                        <a-icon type="plus"/>新增管理员账号
+                    </a-button>
+                </a-col>
+            </a-row>
             <a-row style="margin-top: 16px">
                 <a-col :span="24">
                     <a-table :columns="columns"
                              :rowKey="record => record.id"
                              :dataSource="data"
                              :pagination="false">
-                        <template slot="uname" slot-scope="uname">
-                            {{uname}}
+                        <template slot="uname" slot-scope="record">
+                            <div v-if="record.role === '1'"><a @click="Edit(record)">{{record.uname}}</a></div>
+                            <div v-else> {{record.uname}}</div>
                         </template>
                         <template slot="username" slot-scope="username">
                             {{username}}
@@ -61,17 +69,19 @@
             <a-row>
                 <a-pagination v-if="pagination.pages>0" simple v-model="pagination.current" :total="pagination.total" :pageSize="pagination.size" @change="pageSizeChange" style="float: right;margin-top: 10px"/>
             </a-row>
+            <a-row>
+                <AdminForm ref="AdminForm" @communitySave="initData"></AdminForm>
+            </a-row>
         </a-spin>
     </div>
 </template>
 
 <script>
 import {getUserByAdmin, LockedUser} from '../api/user'
-
+import AdminForm from './AdminForm'
 const columns = [
   {
     title: '用户账号',
-    dataIndex: 'uname',
     width: '20%',
     scopedSlots: { customRender: 'uname' }
   },
@@ -114,6 +124,9 @@ const columns = [
 ]
 export default {
   name: 'AdminUserAccount',
+  components: {
+    AdminForm
+  },
   data () {
     return {
       form: this.$form.createForm(this),
@@ -169,6 +182,12 @@ export default {
           this.$message.error(res.msg)
         }
       })
+    },
+    add () {
+      this.$refs.AdminForm.showModal()
+    },
+    Edit (data) {
+      this.$refs.AdminForm.showModal(data)
     }
   }
 }
