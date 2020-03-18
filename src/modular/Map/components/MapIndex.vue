@@ -56,7 +56,7 @@ export default {
             label: {content: item.communityName, offset: [10, 12]}
           })
         })
-        console.log(this.markers)
+        // console.log(this.markers)
       })
     }
   }
