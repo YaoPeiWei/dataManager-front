@@ -157,7 +157,7 @@ export default {
       data: [],
       pagination: {
         current: 0,
-        size: 10,
+        size: 5,
         pages: 0,
         total: 0
       }

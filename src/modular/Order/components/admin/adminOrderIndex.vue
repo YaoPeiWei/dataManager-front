@@ -14,7 +14,7 @@
         <adminOrder></adminOrder>
       </div>
       <div class="HistoryedOrder" v-if="tab === 'HistoryedOrder'">
-        Connect 2
+        <adminHistoryOrder></adminHistoryOrder>
       </div>
     </a-card>
 <!--    <a-tabs defaultActiveKey="1" :tabPosition="mode">-->
@@ -30,10 +30,12 @@
 
 <script>
 import adminOrder from './adminOrder'
+import adminHistoryOrder from './adminHistoryOrder'
 export default {
   name: 'adminOrderIndex',
   components: {
-    adminOrder
+    adminOrder,
+    adminHistoryOrder
   },
   data () {
     return {
