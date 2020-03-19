@@ -79,9 +79,13 @@
               <div v-html="isParking === '0'?'空闲':'在停'"></div>
             </template>
             <template slot="action" slot-scope="record">
-              <a-button type="primary"  style="float: left" @click="Edit(record)">
-                <a-icon type="edit"/>编辑车位
-              </a-button>
+              <a-button-group>
+                <a-button type="primary"  style="float: left" @click="Edit(record)">
+                  <a-icon type="edit"/>编辑车位
+                </a-button>
+                <a-button type="danger"  style="float: left" @click="deleteData(record)" icon="delete">
+                </a-button>
+              </a-button-group>
             </template>
           </a-table>
         </a-col>
@@ -92,6 +96,9 @@
       <a-row>
         <carParkForm ref="carParkForm" @carParkSave="selectData"></carParkForm>
       </a-row>
+      <a-row>
+        <DeleteModel ref="DeleteModel" @DeleteSuccess="selectData"></DeleteModel>
+      </a-row>
     </a-spin>
   </div>
 </template>
@@ -100,6 +107,7 @@
 import {SelectCarPark} from '../api/carPark'
 import {ListCommunity, getRegionByCommunityId} from '../../Community/api/community'
 import carParkForm from './carParkForm'
+import DeleteModel from '../../Index/components/DeleteModel'
 const columns = [
   {
     title: '所属小区',
@@ -118,7 +126,7 @@ const columns = [
   {
     title: '区域',
     dataIndex: 'region',
-    width: '10%'
+    width: '8%'
   },
   {
     title: '宽度',
@@ -152,14 +160,15 @@ const columns = [
   },
   {
     title: '操作',
-    width: '15%',
+    width: '17%',
     scopedSlots: { customRender: 'action' }
   }
 ]
 export default {
   name: 'carParking',
   components: {
-    carParkForm
+    carParkForm,
+    DeleteModel
   },
   data () {
     return {
@@ -235,6 +244,9 @@ export default {
           this.region = res.result
         })
       }
+    },
+    deleteData (data) {
+      this.$refs.DeleteModel.showDeleteConfirm(data, 'DeleteCarPark')
     }
   }
 }

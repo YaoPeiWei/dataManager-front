@@ -4,6 +4,8 @@
 
 <script>
 import {DeleteUser} from '../../User/api/user'
+import {DeleteCarPark} from '../../CarPark/api/carPark'
+import {DeleteCommunity} from '../../Community/api/community'
 
 export default {
   name: 'DeleteModel',
@@ -19,11 +21,18 @@ export default {
         onOk () {
           // console.log(method)
           // console.log(data)
-          let m
+          let m, path
           if (method === 'DeleteUser') {
             m = DeleteUser
+            path = '/user/' + method
+          } else if (method === 'DeleteCarPark') {
+            m = DeleteCarPark
+            path = '/carPark/' + method
+          } else if (method === 'DeleteCommunity') {
+            m = DeleteCommunity
+            path = '/community/' + method
           }
-          m('/user/' + method, {id: data.id}).then(res => {
+          m(path, {id: data.id}).then(res => {
             if (res.code === 0) {
               _this.$message.success('删除成功')
               _this.$emit('DeleteSuccess')

@@ -47,9 +47,13 @@
               {{latitude}}
             </template>
             <template slot="action" slot-scope="record">
-              <a-button type="primary"  style="float: left" @click="Edit(record)">
-                <a-icon type="edit"/>编辑小区信息
-              </a-button>
+              <a-button-group>
+                <a-button type="primary"  style="float: left" @click="Edit(record)">
+                  <a-icon type="edit"/>编辑小区信息
+                </a-button>
+                <a-button type="danger"  style="float: left" @click="deleteData(record)" icon="delete">
+                </a-button>
+              </a-button-group>
             </template>
           </a-table>
         </a-col>
@@ -60,6 +64,9 @@
       <a-row>
         <communityForm ref="communityForm" @communitySave="selectData"></communityForm>
       </a-row>
+      <a-row>
+        <DeleteModel ref="DeleteModel" @DeleteSuccess="selectData"></DeleteModel>
+      </a-row>
     </a-spin>
   </div>
 </template>
@@ -67,6 +74,7 @@
 <script>
 import {getCommunity} from '../api/community'
 import communityForm from './communityForm'
+import DeleteModel from '../../Index/components/DeleteModel'
 const columns = [
   {
     title: '小区名',
@@ -84,7 +92,7 @@ const columns = [
   {
     title: '小区车位区域',
     dataIndex: 'region',
-    width: '20%',
+    width: '15%',
     scopedSlots: { customRender: 'region' }
   },
   {
@@ -101,14 +109,15 @@ const columns = [
   },
   {
     title: '操作',
-    width: '15%',
+    width: '20%',
     scopedSlots: { customRender: 'action' }
   }
 ]
 export default {
   name: 'carParking',
   components: {
-    communityForm
+    communityForm,
+    DeleteModel
   },
   data () {
     return {
@@ -161,6 +170,9 @@ export default {
     },
     Edit (data) {
       this.$refs.communityForm.showModal(data)
+    },
+    deleteData (data) {
+      this.$refs.DeleteModel.showDeleteConfirm(data, 'DeleteCommunity')
     }
   }
 }
