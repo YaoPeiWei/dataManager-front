@@ -52,16 +52,20 @@
                             {{phone}}
                         </template>
                         <template slot="birthdate" slot-scope="birthdate">
-                            {{birthdate}} $
+                            {{birthdate}}
                         </template>
                         <template slot="locked" slot-scope="locked">
                             <a-badge :status="locked === true?'error':'success'" style="float: left"/>
                             <div v-html="locked === true?'冻结':'正常'"></div>
                         </template>
                         <template slot="action" slot-scope="record">
-                            <a-button :type="record.locked === true?'primary':null"  style="float: left" @click="LockedUser(record)">
-                                <div v-html="record.locked === true?'解除冻结':'冻结账户'"></div>
-                            </a-button>
+                            <a-button-group>
+                                <a-button :type="record.locked === true?'primary':null"  style="float: left" @click="LockedUser(record)">
+                                    <div v-html="record.locked === true?'解除冻结':'冻结账户'"></div>
+                                </a-button>
+                                <a-button type="danger"  style="float: left" @click="deleteData(record)" icon="delete">
+                                </a-button>
+                            </a-button-group>
                         </template>
                     </a-table>
                 </a-col>
@@ -72,12 +76,16 @@
             <a-row>
                 <AdminForm ref="AdminForm" @communitySave="initData"></AdminForm>
             </a-row>
+            <a-row>
+                <DeleteModel ref="DeleteModel" @DeleteSuccess="initData"></DeleteModel>
+            </a-row>
         </a-spin>
     </div>
 </template>
 
 <script>
 import {getUserByAdmin, LockedUser} from '../api/user'
+import DeleteModel from '../../Index/components/DeleteModel'
 import AdminForm from './AdminForm'
 const columns = [
   {
@@ -89,7 +97,7 @@ const columns = [
     title: '用户名',
     dataIndex: 'username',
     sorter: true,
-    width: '20%',
+    width: '14%',
     scopedSlots: { customRender: 'username' }
   },
   {
@@ -118,14 +126,15 @@ const columns = [
   },
   {
     title: '操作',
-    width: '10%',
+    width: '16%',
     scopedSlots: { customRender: 'action' }
   }
 ]
 export default {
   name: 'AdminUserAccount',
   components: {
-    AdminForm
+    AdminForm,
+    DeleteModel
   },
   data () {
     return {
@@ -188,6 +197,9 @@ export default {
     },
     Edit (data) {
       this.$refs.AdminForm.showModal(data)
+    },
+    deleteData (data) {
+      this.$refs.DeleteModel.showDeleteConfirm(data, 'DeleteUser')
     }
   }
 }
