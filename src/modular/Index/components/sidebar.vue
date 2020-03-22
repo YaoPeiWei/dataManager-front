@@ -3,12 +3,19 @@
     <a-layout-sider :style="{ overflow: 'auto', height: '100vh', position: 'fixed', left: 0 }">
       <div class="logo">
         <div class="touxiang">
-          <div v-if="flag">
-            <a-avatar :src="touxiang" :size="100"/>
-          </div>
-          <div v-else>
-            <a-avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" :size="100"/>
-          </div>
+            <a-upload
+                    accept=".jpg,.png,.jpeg"
+                    :custom-request="upload"
+                    :multiple="false"
+                    :show-upload-list="false"
+            >
+                <div>
+                    <a-avatar :size="100" :src="touxiang?touxiang:'https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png'"></a-avatar>
+                </div>
+                <a-modal :visible="previewVisible" :footer="null" @cancel="handleCancel">
+                    <img alt="example" style="width: 100%" :src="touxiang?touxiang:'https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png'" />
+                </a-modal>
+            </a-upload>
         </div>
       </div>
       <a-menu theme="dark" mode="inline" :defaultSelectedKeys="selectKeys" class="menu" @select="selectMenu">
@@ -46,7 +53,7 @@
 </template>
 
 <script>
-import {logout} from '../api/sidebar'
+import {logout, uploadImage} from '../api/sidebar'
 import {delCookie} from '../../../cookie'
 import Edit from '../../Login/components/Edit'
 import menu from '../assets/menu'
@@ -57,26 +64,19 @@ export default {
       menu: [],
       selectKeys: [],
       touxiang: undefined,
-      flag: false,
       user: {
         username: undefined,
         role: undefined
       },
       over: false,
-      lover: false
+      lover: false,
+      previewVisible: false
     }
   },
   components: {
     Edit
   },
   watch: {
-    touxiang (val) {
-      if (this.touxiang) {
-        this.flag = true
-      } else {
-        this.flag = false
-      }
-    },
     $route: {
       handler: function (val, oldVal) {
         // console.log(val)
@@ -111,7 +111,7 @@ export default {
     async loadTouXiang () {
       // console.log(this.$store.getters.getUserId)
       if (this.$store.getters.getUserId) {
-        this.touxiang = 'http://localhost:8080/api/attach/getAttachByUid?uid=' + this.$store.getters.getUserId
+        this.touxiang = 'http://localhost:8080/api/attach/getAttachByUid?uid=' + this.$store.getters.getUserId + '&r=' + Math.random()
       }
     },
     changEditColor () {
@@ -147,6 +147,28 @@ export default {
         path: '/index/' + val.selectedKeys[0]
       })
       // console.log(val)
+    },
+    /**
+     * 文件选择
+     */
+    upload (file) {
+      const params = new FormData()
+      params.append('file', file.file)
+      params.append('userId', this.$store.getters.getUserId)
+      uploadImage(params).then(res => {
+        if (res.data.code === 0) {
+          this.flag = false
+          this.loadTouXiang()
+        } else {
+          this.$message.error('上传图片失败')
+        }
+      })
+    },
+    handleCancel () {
+      this.previewVisible = false
+    },
+    async handlePreview (file) {
+      this.previewVisible = true
     }
   }
 }
@@ -168,6 +190,7 @@ export default {
   }
   .touxiang{
     margin-left: 8px;
+    cursor: pointer;
   }
   .info{
     margin-left: 8px;
