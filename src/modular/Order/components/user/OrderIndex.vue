@@ -1,8 +1,8 @@
 <template>
-  <div :style="{ padding: '24px', background: '#fff', textAlign: 'center',minHeight: '600px' }">
-    <div class="business">
-      <business></business>
-    </div>
+  <div :style="{ background: '#fff', textAlign: 'center',minHeight: '600px' }">
+<!--    <div class="business">-->
+<!--      <business></business>-->
+<!--    </div>-->
     <div class="order">
       <order></order>
     </div>
@@ -23,6 +23,6 @@ export default {
 
 <style scoped>
   .order{
-    margin-top: 20px;
+    /*margin-top: 20px;*/
   }
 </style>
