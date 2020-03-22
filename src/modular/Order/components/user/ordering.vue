@@ -53,7 +53,7 @@
         </div>
         <template class="ant-card-actions" slot="actions">
           <span v-if="order.status==='0'" @click="cancelOrder"> <a-icon type="delete" /><span style="margin-left: 8px">取消订单</span></span>
-          <span v-if="order.status==='1'" @click="pay"><a-icon type="strikethrough" /><span style="margin-left: 8px">支付订单</span></span>
+          <span v-else @click="pay(order.status)"><a-icon type="strikethrough" /><span style="margin-left: 8px">支付订单</span></span>
         </template>
       </a-card>
       <div v-html="content" ref="alipayWap"></div>
@@ -134,6 +134,10 @@ export default {
             if (res.result && res.result.status === '1' && res.result.comptime) {
               this.showTimer(this.order.comptime)
             }
+            if (res.result && res.result.status === '2' && res.result.settlementTime) {
+              // console.log(res.result.settlementTime)
+              this.showPay(this.order.comptime, res.result.settlementTime)
+            }
             if (res.result && res.result.status === '0') {
               this.$refs.timer.NotimeCreated()
             }
@@ -196,13 +200,51 @@ export default {
       const ctime = this.computeTime(time)
       this.$refs.timer.created(ctime, days)
     },
+    showPay (comptime, settlementTime) {
+      // direct_time格式为yyyy-mm-dd hh:mm:ss 指定时间
+      // console.log(settlementTime)
+      let nowTime = Date.parse(new Date(comptime))// 当前时间的时间戳
+      let endTime = Date.parse(new Date(settlementTime))// 指定时间的时间戳
+      let timeDis = endTime - nowTime
+      let days = Math.floor(timeDis / (24 * 3600 * 1000))
+      const ctime = this.PayTime(comptime, settlementTime)
+      this.$refs.timer.payCreated(ctime, days)
+    },
+    PayTime (time, settlementTime) {
+      // direct_time格式为yyyy-mm-dd hh:mm:ss 指定时间
+      // console.log(settlementTime)
+      let nowTime = Date.parse(new Date(time))// 当前时间的时间戳
+      let endTime = Date.parse(new Date(settlementTime))// 指定时间的时间戳
+      // 计算相差天数
+      let timeDis = endTime - nowTime
+      let days = Math.floor(timeDis / (24 * 3600 * 1000))
+      // 计算出小时数
+      let leave1 = timeDis % (24 * 3600 * 1000)// 计算天数后剩余的毫秒数
+      let hours = Math.floor(leave1 / (3600 * 1000))
+      // 计算相差分钟数
+      let leave2 = leave1 % (3600 * 1000)// 计算小时数后剩余的毫秒数
+      let minutes = Math.floor(leave2 / (60 * 1000))
+      // 计算相差秒数
+      let leave3 = leave2 % (60 * 1000)// 计算小时数后剩余的毫秒数
+      let second = leave3 / 1000
+      let date = new Date()
+      date.setHours(hours)
+      date.setMinutes(minutes)
+      date.setSeconds(second)
+      this.order.price = (days * 24 * this.order.dprice) + ((hours + 1) * this.order.dprice)
+      return date
+    },
     cancelOrder () {
       this.$refs.cancelOrder.showModal(this.order)
     },
     CancelBack () {
       this.$emit('CancelBack')
     },
-    pay () {
+    pay (status) {
+      if (status !== '2') {
+        this.$message.warning('请等待管理员结算')
+        return
+      }
       payOrder('/pay/payOrder', {id: this.order.id}).then(res => {
         this.paying = true
         this.content = res
