@@ -51,13 +51,15 @@ const store = new Vuex.Store({
       sessionStorage.setItem(state.User, JSON.stringify(a))
     },
     clearLoginUser: state => {
-      const loginUserArray = JSON.parse(sessionStorage.getItem(state.User))
-      let userArray = []
-      if (loginUserArray) {
-        userArray = loginUserArray.filter(item => item.id !== sessionStorage.getItem(state.userId))
-      }
-      sessionStorage.setItem(state.userId, undefined)
-      sessionStorage.setItem(state.User, JSON.stringify(userArray))
+      // const loginUserArray = JSON.parse(sessionStorage.getItem(state.User))
+      // let userArray = []
+      // if (loginUserArray) {
+      //   userArray = loginUserArray.filter(item => item.id !== sessionStorage.getItem(state.userId))
+      // }
+      // sessionStorage.removeItem(state.authorization)
+      // sessionStorage.removeItem(state.userId)
+      // sessionStorage.removeItem(state.User)
+      sessionStorage.clear()
     },
     setRememberUser: (state, user) => localStorage.setItem(state.RememberUser, JSON.stringify(user)),
     clearRememberUser: state => localStorage.removeItem(state.RememberUser),

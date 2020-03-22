@@ -94,7 +94,7 @@ export default {
   },
   methods: {
     async initData () {
-      this.user = await this.$store.getters.getLoginUser
+      this.user = await this.getLoginUser()
       this.loadTouXiang()
       // console.log(JSON.stringify(menu))
       // console.log(JSON.stringify(this.user))
@@ -104,14 +104,22 @@ export default {
       this.menu = menu.filter(item => item.role === this.user.role)
       this.initSelectKeys()
     },
+    async getLoginUser () {
+      const loginUserArray = JSON.parse(sessionStorage.getItem(this.$store.state.User))
+      if (loginUserArray) {
+        const user = loginUserArray.filter(item => item.id === sessionStorage.getItem(this.$store.state.userId))
+        return user[0]
+      }
+      return null
+    },
     initSelectKeys () {
       // console.log(this.$route.path.split('/'))
       this.selectKeys.push(this.$route.path.split('/')[2].toString())
     },
     async loadTouXiang () {
-      // console.log(this.$store.getters.getUserId)
-      if (this.$store.getters.getUserId) {
-        this.touxiang = 'http://localhost:8080/api/attach/getAttachByUid?uid=' + this.$store.getters.getUserId + '&r=' + Math.random()
+      // console.log(sessionStorage.getItem(this.$store.state.userId))
+      if (sessionStorage.getItem(this.$store.state.userId)) {
+        this.touxiang = 'http://localhost:8080/api/attach/getAttachByUid?uid=' + sessionStorage.getItem(this.$store.state.userId) + '&r=' + Math.random()
       }
     },
     changEditColor () {
@@ -126,18 +134,22 @@ export default {
     lougotLeave () {
       this.lover = false
     },
-    logout () {
-      logout('/user/logout/LogOut', null).then(res => {
+    async logout () {
+      let flag = false
+      await logout('/user/logout/LogOut', null).then(res => {
         if (res.code === 0) {
-          this.$store.commit('clearLoginUser')
-          delCookie('authorization')
-          this.$router.push({
-            path: '/login'
-          })
+          flag = true
         } else {
           this.$message.error('注销失败')
         }
       })
+      if (flag) {
+        this.$store.commit('clearLoginUser')
+        delCookie('authorization')
+        this.$router.push({
+          path: '/login'
+        })
+      }
     },
     edit () {
       this.$refs.Edit.showDrawer()
