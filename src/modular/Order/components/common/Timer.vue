@@ -33,6 +33,7 @@ export default {
       this.$refs.startTimer.innerHTML = this.day + 'Day  ' + (this.hour < 10 ? '0' + this.hour : this.hour) + ':' + ('00') + ':' + ('00')
     },
     payCreated (ptime, day) {
+      clearInterval(this.timer)
       this.day = day
       this.hour = new Date(ptime).getHours()
       this.minutes = new Date(ptime).getMinutes()
@@ -57,6 +58,7 @@ export default {
       this.$refs.startTimer.innerHTML = this.day + 'Day  ' + (this.hour < 10 ? '0' + this.hour : this.hour) + ':' + (this.minutes < 10 ? '0' + this.minutes : this.minutes) + ':' + (this.seconds < 10 ? '0' + this.seconds : this.seconds)
     },
     returnTime () {
+      clearInterval(this.timer)
       let date = new Date()
       date.setDate(new Date().getFullYear().toString() + '-' + (new Date().getMonth() + 1).toString() + '-' + new Date().getDay().toString())
       date.setHours(this.hour)
