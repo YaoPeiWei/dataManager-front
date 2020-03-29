@@ -69,6 +69,8 @@
 <script>
 import {dologin, getLoginUser} from '../api/login'
 import Register from './Register'
+import {encryption} from '../../utils'
+
 export default {
   name: 'Login',
   beforeCreate () {
@@ -105,6 +107,13 @@ export default {
           this.loading = true
           setTimeout(() => {
             this.loading = false
+            const user = encryption({
+              data: values,
+              type: 'Aes',
+              key: '6F9D2C18005348C2',
+              param: ['password']
+            })
+            values.password = user.password
             dologin('/user/login/security/doLogin', values).then(res => {
               if (res.code === 103) {
                 getLoginUser('/user/ReturnLoginUser', null).then(res => {
