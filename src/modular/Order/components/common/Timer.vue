@@ -29,6 +29,7 @@ export default {
       this.timer = setInterval(this.startTimer, 1000)
     },
     NotimeCreated () {
+      clearInterval(this.timer)
       this.$refs.startTimer.innerHTML = this.day + 'Day  ' + (this.hour < 10 ? '0' + this.hour : this.hour) + ':' + ('00') + ':' + ('00')
     },
     payCreated (ptime, day) {
