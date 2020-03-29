@@ -212,7 +212,7 @@ export default {
         let days = Math.floor(timeDis / (24 * 3600 * 1000))
         const ctime = this.computeTime(time)
         this.$refs.timer.created(ctime, days)
-      }, 3000)
+      }, 2000)
     },
     showPay (comptime, settlementTime) {
       // direct_time格式为yyyy-mm-dd hh:mm:ss 指定时间
