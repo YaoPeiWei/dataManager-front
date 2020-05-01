@@ -18,6 +18,17 @@
                         </a-form-item>
                     </a-col>
                 </a-row>
+                <a-row :gutter="24" v-if="user.role === '2'">
+                    <a-col :span="22" :offset="2">
+                        <a-form-item label="所属小区" :label-col="{ span: 5 }" :wrapper-col="{ span: 17 }" :colon="false">
+                            <a-select v-decorator="['communityId',  {
+                                    rules: [{ required: true, message: '请选择车位所属小区' }]
+                                }]" placeholder="请选择车位所属小区" :allowClear="true">
+                                <a-select-option v-for="d in community" :key="d.id">{{ d.communityName}}</a-select-option>
+                            </a-select>
+                        </a-form-item>
+                    </a-col>
+                </a-row>
                 <a-row :gutter="24">
                     <a-col :span="22" :offset="2">
                         <a-form-item label="密码" :label-col="{ span: 5 }" :wrapper-col="{ span: 17 }" :colon="false">
@@ -88,6 +99,7 @@
 
 <script>
 import {registerAdmin} from '../api/user'
+import {ListCommunity} from '../../Community/api/community'
 export default {
   name: 'AdminForm',
   data () {
@@ -99,12 +111,18 @@ export default {
       id: undefined,
       inputVisible: false,
       inputValue: '',
-      tags: []
+      tags: [],
+      community: [],
+      user: {
+        role: undefined
+      }
     }
   },
   methods: {
-    showModal (data) {
+    async showModal (data) {
       // console.log(JSON.stringify(data))
+      this.user = this.$store.getters.getLoginUser
+      await this.initCommunity()
       if (data) {
         this.title = '编辑管理员账户'
         this.id = data.id
@@ -114,7 +132,8 @@ export default {
             password: data.password,
             username: data.username,
             phone: data.phone,
-            mail: data.mail
+            mail: data.mail,
+            communityId: data.communityId
           })
         }, 0)
       }
@@ -159,13 +178,20 @@ export default {
           password: undefined,
           username: undefined,
           phone: undefined,
-          mail: undefined
+          mail: undefined,
+          communityId: undefined
         })
         this.id = undefined
         this.tags = []
       }, 0)
       this.confirmLoading = false
       this.visible = false
+    },
+    initCommunity () {
+      ListCommunity('/community/ListCommunity').then(res => {
+        this.community = res.result
+        // console.log(this.community)
+      })
     }
   }
 }
