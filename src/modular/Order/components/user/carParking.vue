@@ -10,16 +10,23 @@
         <a-form :form="form">
           <a-form-item>
             <a-row>
+<!--              <a-col :span="12">-->
+<!--                <a-form-item label="小区名" :label-col="{ span: 6 }" :wrapper-col="{ span: 15 }"   :colon="false">-->
+<!--                  <a-select v-decorator="['communityId']" :allowClear="true" @select="selectCommunityId">-->
+<!--                    <a-select-option v-for="d in community" :key="d.id">{{ d.communityName }}</a-select-option>-->
+<!--                  </a-select>-->
+<!--                </a-form-item>-->
+<!--              </a-col>-->
+<!--              <a-col :span="12">-->
+<!--                <a-form-item label="区域" :label-col="{ span: 6 }" :wrapper-col="{ span: 15 }"   :colon="false">-->
+<!--                  <a-select v-decorator="['region']" :allowClear="true">-->
+<!--                    <a-icon slot="suffixIcon" type="car" />-->
+<!--                    <a-select-option v-for="d in region" :key="d">{{ d}}</a-select-option>-->
+<!--                  </a-select>-->
+<!--                </a-form-item>-->
+<!--              </a-col>-->
               <a-col :span="8">
-                <a-form-item label="区域" :label-col="{ span: 4 }" :wrapper-col="{ span: 15 }"   :colon="false">
-                  <a-select v-decorator="['region']" :allowClear="true">
-                    <a-icon slot="suffixIcon" type="car" />
-                    <a-select-option v-for="d in region" :key="d">{{ d}}</a-select-option>
-                  </a-select>
-                </a-form-item>
-              </a-col>
-              <a-col :span="8">
-                <a-form-item label="宽度(单位: m)" :label-col="{ span: 10 }" :wrapper-col="{ span: 14 }"   :colon="false">
+                <a-form-item label="宽度(单位: m)" :label-col="{ span: 9 }" :wrapper-col="{ span: 14 }"   :colon="false">
                   <a-input-number
                     v-decorator="['width']"
                     :max="5"
@@ -29,7 +36,7 @@
                 </a-form-item>
               </a-col>
               <a-col :span="8">
-                <a-form-item label="长度(单位: m)" :label-col="{ span: 10 }" :wrapper-col="{ span: 14 }"   :colon="false">
+                <a-form-item label="长度(单位: m)" :label-col="{ span: 9 }" :wrapper-col="{ span: 14 }"   :colon="false">
                   <a-input-number
                     v-decorator="['length']"
                     :max="7"
@@ -38,21 +45,21 @@
                   />
                 </a-form-item>
               </a-col>
-            </a-row>
-            <a-row>
-              <a-col :span="5">
+              <a-col :span="8">
                 <a-form-item label="状态" :label-col="{ span: 7 }" :wrapper-col="{ span: 17 }"   :colon="false">
                   <a-col :span="12">
                     <a-switch v-decorator="['isParking']" checkedChildren="在停" unCheckedChildren="空闲" />
                   </a-col>
                 </a-form-item>
               </a-col>
-              <a-col :span="3">
+            </a-row>
+            <a-row>
+              <a-col :span="3" :offset="1">
                 <a-button type="primary" @click="handleSubmit">查询</a-button>
               </a-col>
               <a-col :span="16">
                 <a-form-item label="车位具体位置" :label-col="{ span: 5 }" :wrapper-col="{ span: 17 }">
-                  <div>{{  selectedData.location }}</div>
+                  <div>{{selectedData.communityName}} {{  selectedData.location }}</div>
                 </a-form-item>
               </a-col>
             </a-row>
@@ -69,9 +76,6 @@
                    :loading="loading">
             <template slot="location" slot-scope="location">
               {{location}}
-            </template>
-            <template slot="region" slot-scope="region">
-              {{region}}
             </template>
             <template slot="width" slot-scope="width">
               {{width}} m
@@ -101,18 +105,14 @@
 
 <script>
 import {getCarPark} from '../../api/carPark'
+import {getRegionByCommunityId, ListCommunity} from '../../../Community/api/community'
 const columns = [
   {
     title: '车位位置',
     dataIndex: 'location',
     sorter: true,
-    width: '20%',
+    width: '25%',
     scopedSlots: { customRender: 'location' }
-  },
-  {
-    title: '车位区域',
-    dataIndex: 'region',
-    width: '15%'
   },
   {
     title: '车位宽度',
@@ -129,13 +129,13 @@ const columns = [
   {
     title: '费用(每小时)',
     dataIndex: 'price',
-    width: '10%',
+    width: '15%',
     scopedSlots: { customRender: 'price' }
   },
   {
     title: '室内车位',
     dataIndex: 'isRoom',
-    width: '15%',
+    width: '20%',
     scopedSlots: { customRender: 'isRoom' }
   },
   {
@@ -151,7 +151,7 @@ export default {
     return {
       form: this.$form.createForm(this),
       visible: false,
-      region: ['A', 'B', 'C', 'D', 'E'], // 区域
+      region: [], // 区域
       loading: false,
       confirmLoading: false,
       columns,
@@ -170,13 +170,15 @@ export default {
           this.selectedData = selectedRowKeys
         }
       },
-      selectedData: {}
+      selectedData: {},
+      community: []
     }
   },
   methods: {
     showModal () {
       this.visible = !this.visible
       this.initData()
+      this.initCommunity()
     },
     initData () {
       const param = this.form.getFieldsValue(['region', 'width', 'length', 'isParking'])
@@ -217,6 +219,19 @@ export default {
     handleCancel () {
       this.visible = false
       this.$emit('finishSelect')
+    },
+    selectCommunityId (data) {
+      // console.log(data)
+      if (data) {
+        getRegionByCommunityId('/community/getRegionByCommunityId', {id: data}).then(res => {
+          this.region = res.result
+        })
+      }
+    },
+    initCommunity () {
+      ListCommunity('/community/ListCommunity').then(res => {
+        this.community = res.result
+      })
     }
   }
 }
