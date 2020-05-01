@@ -162,7 +162,7 @@ export default {
       this.form.validateFields((err, values) => {
         if (!err) {
           this.loading = true
-          values.role = '1'
+          values.role = '0'
           values.birthdate = this.format(values.birthdate,'yyyy-MM-dd HH:mm:ss')
           register('/user/register', values).then(res => {
             this.loading = false
