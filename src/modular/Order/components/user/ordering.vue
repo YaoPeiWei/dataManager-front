@@ -121,6 +121,10 @@ export default {
       alert('当前浏览器 Not support websocket')
     }
   },
+  beforeDestroy () {
+    // 关闭websocket连接
+    this.closeWebSocket()
+  },
   methods: {
     async initData () {
       let flag = false
