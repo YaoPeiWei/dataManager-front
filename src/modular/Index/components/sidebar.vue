@@ -166,7 +166,7 @@ export default {
     upload (file) {
       const params = new FormData()
       params.append('file', file.file)
-      params.append('userId', this.$store.getters.getUserId)
+      params.append('userId', sessionStorage.getItem('userId'))
       uploadImage(params).then(res => {
         if (res.data.code === 0) {
           this.flag = false
