@@ -13,7 +13,11 @@
                         <a-form-item label="所属小区" :label-col="{ span: 5 }" :wrapper-col="{ span: 17 }" :colon="false">
                             <a-select v-decorator="['communityId',  {
                                     rules: [{ required: true, message: '请选择车位所属小区' }]
-                                }]" placeholder="请选择车位所属小区" :allowClear="true" @change="selectCommunityId">
+                                }]" placeholder="请选择车位所属小区" :allowClear="true" @change="selectCommunityId" :get-popup-container="triggerNode => triggerNode.parentNode"
+                                    :dropdown-style="{
+                                      overflow: 'auto',
+                                      zIndex: '2'
+                                    }">
                                 <a-select-option v-for="d in community" :key="d.id">{{ d.communityName}}</a-select-option>
                             </a-select>
                         </a-form-item>
@@ -24,7 +28,11 @@
                         <a-form-item label="区域" :label-col="{ span: 5 }" :wrapper-col="{ span: 17 }" :colon="false">
                             <a-select v-decorator="['region',  {
                                     rules: [{ required: true, message: '请选择车位的区域' }]
-                                }]" placeholder="请选择车位的区域" :allowClear="true">
+                                }]" placeholder="请选择车位的区域" :allowClear="true" :get-popup-container="triggerNode => triggerNode.parentNode"
+                                    :dropdown-style="{
+                                      overflow: 'auto',
+                                      zIndex: '2'
+                                    }">
                                 <a-select-option v-for="d in region" :key="d">{{ d}}</a-select-option>
                             </a-select>
                         </a-form-item>
