@@ -46,8 +46,9 @@ export default {
       this.hasOrder = false
       this.createCarParking()
     },
-    showOrder () {
-      this.$refs.ordering.initData().then(res => {
+    async showOrder () {
+      await this.$refs.ordering.initData().then(res => {
+        // console.log(res)
         this.hasOrder = res
       })
     },

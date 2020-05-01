@@ -52,6 +52,9 @@
       <p class="pStyle">车位信息</p>
       <a-row>
         <a-col :span="12">
+          <description title="小区名" :content="carPark.communityName" />
+        </a-col>
+        <a-col :span="12">
           <description title="区域" :content="carPark.region" />
         </a-col>
         <a-col :span="12">

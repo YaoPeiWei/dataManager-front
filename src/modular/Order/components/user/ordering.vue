@@ -43,6 +43,10 @@
             <span style="margin-left: 20px;font-size: 14px">{{carPark.location}}</span>
           </a-col>
           <a-col :span="12" style="margin-top: 20px">
+            <span style="font-weight: bolder;font-size: 20px"><a-icon type="notification" />  车位位置 :</span>
+            <span style="margin-left: 20px;font-size: 14px">{{carPark.communityName}}</span>
+          </a-col>
+          <a-col :span="12" style="margin-top: 20px">
             <span style="font-weight: bolder;font-size: 20px"><a-icon type="dashboard" />  订单状态 :</span>
             <span style="margin-left: 20px;font-size: 14px">{{order.status | filterStatusVal}}</span>
           </a-col>
