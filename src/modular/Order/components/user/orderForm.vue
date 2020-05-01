@@ -12,7 +12,7 @@
         </a-form-item>
         <a-form-item v-bind="formItemLayout" label="车位位置" :colon="false" v-if="selected">
           <a-input v-decorator="['location']" v-show="false"></a-input>
-          <div v-if="carPark.location">{{ carPark.location}}</div>
+          <div v-if="carPark.location">{{ d.communityName}} {{ carPark.location}}</div>
         </a-form-item>
         <a-form-item v-bind="formItemLayout" label="每小时费用" :colon="false" v-if="selected">
           <a-input v-decorator="['price']" v-show="false"></a-input>
@@ -43,7 +43,6 @@
 </template>
 
 <script>
-import moment from 'moment'
 import carParking from './carParking'
 import {inserOrder} from '../../api/order'
 
@@ -82,6 +81,7 @@ export default {
         price: undefined,
         location: undefined
       },
+      d: undefined,
       dateFormat: 'yyyy-MM-dd HH:mm:ss'
     }
   },
@@ -120,13 +120,15 @@ export default {
       this.percent = 0
       if (data) {
         this.selected = true
+        this.d = data
         setTimeout(() => {
           this.carPark.id = data.id
           this.carPark.price = data.price
           this.carPark.location = data.location
+          // console.log(data.communityName)
           this.form.setFieldsValue({
             price: data.price,
-            location: data.location
+            location: data.communityName + ' ' + data.location
           })
         }, 0)
       }
@@ -139,7 +141,7 @@ export default {
             carparkId: this.carPark.id,
             dprice: values.price,
             carNumber: values.carNumber,
-            appointmentTime: this.format(values.parkTime,'yyyy-MM-dd HH:mm:ss')
+            appointmentTime: this.format(values.parkTime, 'yyyy-MM-dd HH:mm:ss')
           }
           inserOrder('/order/insert/addOrder', param).then(res => {
             if (res.code === 0) {
